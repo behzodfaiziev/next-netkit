@@ -1,4 +1,4 @@
-import type {NetworkErrorParams} from "../interfaces/network-error-params";
+import type {NetworkErrorParams} from "@/interfaces/network-error-params.ts";
 
 type JsonType = string | { [key: string]: unknown };
 
