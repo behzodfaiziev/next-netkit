@@ -3,7 +3,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
-    "module": "es2015",
+    "module": "commonjs",
     "skipLibCheck": true,
     "target": "es6",
     "declaration": true,
@@ -17,7 +17,7 @@
     "alwaysStrict": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -31,6 +31,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "index.ts"],
   "exclude": ["node_modules"]
 }
