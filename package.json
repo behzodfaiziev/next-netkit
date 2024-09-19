@@ -1,6 +1,6 @@
 {
   "name": "next-netkit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
@@ -12,12 +12,12 @@
   "description": "Network manager",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/behzodfaiziev/react-netkit.git"
+    "url": "git+https://github.com/behzodfaiziev/next-netkit.git"
   },
   "bugs": {
-    "url": "https://github.com/behzodfaiziev/react-netkit/issues"
+    "url": "https://github.com/behzodfaiziev/next-netkit/issues"
   },
-  "homepage": "https://github.com/behzodfaiziev/react-netkit#readme",
+  "homepage": "https://github.com/behzodfaiziev/next-netkit#readme",
   "dependencies": {
     "axios": "^1.7.7",
     "inversify": "^6.0.2"
