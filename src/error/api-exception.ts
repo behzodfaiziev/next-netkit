@@ -1,4 +1,6 @@
-import type {NetworkErrorParams} from "@/interfaces/network-error-params.ts";
+// Relative import makes an error in app build process.
+// So we need to use this import: ../interfaces/network-error-params
+import type {NetworkErrorParams} from "../interfaces/network-error-params";
 
 type JsonType = string | { [key: string]: unknown };
 
