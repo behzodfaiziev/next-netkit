@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npx tsc",
-    "test": "jest"
+    "test": "jest",
+    "testPublish": "npm test && npm publish"
   },
   "keywords": [],
   "author": "Behzodjon Faiziev",
