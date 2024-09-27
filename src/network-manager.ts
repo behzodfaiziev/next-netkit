@@ -1,4 +1,4 @@
-import type {AxiosRequestConfig, AxiosResponse} from "axios";
+import type {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import axios from 'axios';
 import {INetworkManager} from "./network-manager.interface";
 import {NetworkErrorParams} from "./interfaces/network-error-params";
@@ -13,11 +13,11 @@ class NetworkManager implements INetworkManager {
   private readonly testMode: boolean;
   private baseOptions: AxiosRequestConfig;
   private readonly errorParams: NetworkErrorParams;
+  private accessToken: string | null = null;
+  private refreshToken: string | null = null;
 
-  private instance = axios.create({
-    baseURL: 'https://api.example.com',
-    // Additional config options
-  });
+  private instance: AxiosInstance;
+
 
   constructor(
       baseUrl: string,
@@ -32,6 +32,13 @@ class NetworkManager implements INetworkManager {
     this.baseOptions = baseOptions;
     this.errorParams = errorParams;
 
+
+    this.instance = axios.create({
+      baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
+      // Additional config options
+    });
+    this.setTokensFromLocalStorage();
+
     this.instance.interceptors.response.use(
         response => response,
         error => {
@@ -41,11 +48,39 @@ class NetworkManager implements INetworkManager {
     );
   }
 
+  setAccessToken(token: string): void {
+    this.accessToken = token;
+    localStorage.setItem('accessToken', token);
+  }
+
+  setRefreshToken(token: string): void {
+    this.refreshToken = token;
+    localStorage.setItem('refreshToken', token);
+  }
+
+  setTokensFromLocalStorage(): void {
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (accessToken) {
+      this.accessToken = accessToken;
+    }
+    if (refreshToken) {
+      this.refreshToken = refreshToken;
+    }
+  }
+
+  private getHeaders(): Record<string, any> {
+    return {
+      ...this.baseOptions.headers as Record<string, any>,
+      ...(this.accessToken ? {'Authorization': `Bearer ${this.accessToken}`} : {}),
+      ...(this.refreshToken ? {'Refresh-Token': this.refreshToken} : {}),
+    };
+  }
   async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
       const response: AxiosResponse<T> = await this.instance.request({
         ...config,
-        url: this.testMode ? `${this.devBaseUrl}${config.url}` : `${this.baseUrl}${config.url}`,
+        headers: this.getHeaders(),
       });
       return response.data;
     } catch (error: unknown) {
