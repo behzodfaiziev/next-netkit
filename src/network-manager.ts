@@ -39,13 +39,6 @@ class NetworkManager implements INetworkManager {
     });
     this.setTokensFromLocalStorage();
 
-    this.instance.interceptors.response.use(
-        response => response,
-        error => {
-          // Handle errors globally
-          return Promise.reject(error);
-        }
-    );
   }
 
   setAccessToken(token: string): void {
@@ -83,12 +76,11 @@ class NetworkManager implements INetworkManager {
         headers: this.getHeaders(),
       });
       return response.data;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        throw ApiException.fromJson(error.response?.data, this.errorParams, error.response?.status);
-      } else {
-        throw error;
+    } catch (error: any) {
+      if (error.response) {
+        throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
       }
+      throw error;
     }
   }
 }
