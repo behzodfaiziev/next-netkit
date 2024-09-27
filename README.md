@@ -48,7 +48,7 @@ You can create an instance of NetworkManager by passing the base URLs, mode
 (development or production), Axios configuration options, and error-handling parameters.
 
 ```typescript
-import {NetworkManager, NetworkErrorParams} from 'next-netkit';
+import {NetworkErrorParams, NetworkManager} from 'next-netkit';
 
 // Define your error-handling parameters
 const networkErrorParams: NetworkErrorParams = {
@@ -63,13 +63,14 @@ const networkErrorParams: NetworkErrorParams = {
 };
 
 // Create a new instance of NetworkManager
-const networkManager = new NetworkManager(
-        'https://api.example.com', // Production base URL
-        'https://dev.example.com', // Development base URL
-        false, // Test mode: false (production), true (development)
-        {}, // Axios config options
-        networkErrorParams // Error parameters
-);
+const networkManagerInstance = new NetworkManager({
+  baseUrl: 'https://api.example.com', // Production base URL
+  devBaseUrl: 'https://dev.example.com', // Development base URL
+  testMode: false, // Test mode: false (production), true (development)
+  baseOptions: {}, // Axios config options
+  errorParams: networkErrorParams, // Error parameters
+  isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+});
 ```
 
 ### Token Management

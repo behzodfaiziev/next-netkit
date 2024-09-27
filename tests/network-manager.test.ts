@@ -28,6 +28,7 @@ describe('NetworkManager', () => {
   const testMode = false;
   const baseOptions = {headers: {'Content-Type': 'application/json'}};
   const errorParams: NetworkErrorParams = new NetworkErrorParams({});
+  const isClientSideWeb = true;
 
   beforeEach(() => {
     // Clear localStorage before each test
@@ -38,7 +39,14 @@ describe('NetworkManager', () => {
       ...mockedAxios
     } as unknown as AxiosInstance);  // Cast it as any to avoid type errors
 
-    networkManager = new NetworkManager(baseUrl, devBaseUrl, testMode, baseOptions, errorParams);
+    networkManager = new NetworkManager({
+      baseUrl,
+      devBaseUrl,
+      testMode,
+      baseOptions,
+      errorParams,
+      isClientSideWeb
+    });
   });
 
   it('should set access token and store it in localStorage', () => {

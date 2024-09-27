@@ -1,4 +1,37 @@
 # Change Log
+
+## [0.3.0] Note: This version has breaking changes.
+
+- Breaking update: NetworkManager's constructor now accepts named parameters
+  Here is an example of how to use the new constructor:
+
+```typescript
+const networkManagerInstance = new NetworkManager({
+  baseUrl: 'https://api.example.com', // Production base URL
+  devBaseUrl: 'https://dev.example.com', // Development base URL
+  testMode: false, // Test mode: false (production), true (development)
+  baseOptions: {}, // Axios config options
+  errorParams: networkErrorParams, // Error parameters
+  isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+});
+```
+
+`Deprecated` usage:
+
+```typescript
+const networkManager = new NetworkManager(
+    'https://api.example.com', // Production base URL
+    'https://dev.example.com', // Development base URL
+    false, // Test mode: false (production), true (development)
+    {}, // Axios config options
+    networkErrorParams // Error parameters
+);
+```
+
+## [0.2.4]
+
+- added `isClientSideWeb` method to check if the code is running on the client side web
+
 ## [0.2.1]
 - fixed importing issue in next applications
 
