@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",         // Set CommonJS for Node.js
+    "outDir": "./dist/cjs",       // Output for CommonJS
+    "target": "es6"
+  },
+  "exclude": ["node_modules"]
+}

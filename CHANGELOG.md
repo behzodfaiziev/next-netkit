@@ -1,4 +1,6 @@
 # Change Log
+## [0.2.0]
+- added both esnext and commonjs supports
 
 ## [0.1.4]
 
