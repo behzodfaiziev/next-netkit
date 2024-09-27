@@ -35,18 +35,7 @@ describe('NetworkManager', () => {
 
     // Mock axios.create to return an instance with interceptors
     mockedAxios.create.mockReturnValue({
-      ...mockedAxios, // Use all the other properties from the mocked Axios
-      interceptors: {
-        response: {
-          use: (onFulfilled: any, onRejected: (error: any) => never) => {
-            // Mock the 'use' method of interceptors to handle errors
-            onRejected = error => {
-              throw ApiException.fromJson(error.response.data, errorParams, error.response.status);
-            };
-            return { onFulfilled, onRejected };
-          },
-        },
-      },
+      ...mockedAxios
     } as unknown as AxiosInstance);  // Cast it as any to avoid type errors
 
     networkManager = new NetworkManager(baseUrl, devBaseUrl, testMode, baseOptions, errorParams);
