@@ -23,12 +23,12 @@ development (TDD) by making network interactions mockable and testable.
 
 ## Features
 
-- TypeScript-first: Provides full type support and is easily usable in both TypeScript and
+- **TypeScript-first**: Provides full type support and is easily usable in both TypeScript and
   JavaScript projects.
-- Axios Integration: Built on top of Axios for flexible HTTP requests.
-- Dependency Injection: Supports `Inversify` for clean and testable architecture.
-- Error Handling: Customizable error handling using the `ApiException` class.
-- Token Management: Handles access and refresh tokens, stored in `localStorage`.
+- **Axios Integration**: Built on top of Axios for flexible HTTP requests.
+- **Dependency Injection**: Supports `Inversify` for clean and testable architecture.
+- **Error Handling**: Customizable error handling using the `ApiException` class.
+- **Token Management**: Handles access and refresh tokens, stored in `localStorage`.
 
 ## Change-log
 
