@@ -1,6 +1,10 @@
 # Change Log
 
-## [0.3.0] Note: This version has breaking changes.
+## [0.3.2]
+
+- added `clearTokens` method to clear access and refresh tokens from local storage and memory
+
+## [0.3.1] Note: This version has breaking changes.
 
 - Breaking update: NetworkManager's constructor now accepts named parameters
   Here is an example of how to use the new constructor:

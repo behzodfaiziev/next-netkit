@@ -51,6 +51,13 @@ class NetworkManager implements INetworkManager {
     this.setTokensFromLocalStorage();
   }
 
+  clearTokens(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    this.accessToken = null;
+    this.refreshToken = null;
+  }
+
   setAccessToken(token: string): void {
     this.accessToken = token;
     if (this.isClientSide) {

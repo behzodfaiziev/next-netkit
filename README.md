@@ -37,7 +37,7 @@ You can find the changelog [here](CHANGELOG.md).
 ## Installation
 
 ```bash
-npm install next-netkit inversify
+npm install next-netkit axios inversify
 ```
 
 ## Usage
@@ -61,12 +61,14 @@ const networkErrorParams: NetworkErrorParams = {
   jsonUnsupportedObjectError: 'JSON is unsupported object',
   notMapTypeError: 'Not map type',
 };
-
+/// In here NODE_ENV is an environment variable that is set to 'production' or 'development'
+/// It may differ according to your project setup
+const isProduction = process.env.NODE_ENV === 'production';
 // Create a new instance of NetworkManager
 const networkManagerInstance = new NetworkManager({
   baseUrl: 'https://api.example.com', // Production base URL
   devBaseUrl: 'https://dev.example.com', // Development base URL
-  testMode: false, // Test mode: false (production), true (development)
+  testMode: isProduction, // Test mode: false (production), true (development)
   baseOptions: {}, // Axios config options
   errorParams: networkErrorParams, // Error parameters
   isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'

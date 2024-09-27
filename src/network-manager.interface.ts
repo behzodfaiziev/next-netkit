@@ -6,4 +6,6 @@ export interface INetworkManager {
   setAccessToken(token: string): void;
 
   setRefreshToken(token: string): void;
+
+  clearTokens(): void;
 }
