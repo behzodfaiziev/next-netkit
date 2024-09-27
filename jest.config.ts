@@ -8,6 +8,7 @@ const config: Config.InitialOptions = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transformIgnorePatterns: ['<rootDir>/node_modules/'],
+  testMatch: ['<rootDir>/tests/**/*.test.ts'],
 };
 
 export default config;
