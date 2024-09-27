@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.1.3]
+
+- updated exports
+- updated README.md
+
+## [0.1.2]
+
+- updated exports
+
 ## [0.1.1]
 
 - added tests
