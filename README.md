@@ -63,12 +63,12 @@ const networkErrorParams: NetworkErrorParams = {
 };
 /// In here NODE_ENV is an environment variable that is set to 'production' or 'development'
 /// It may differ according to your project setup
-const isProduction = process.env.NODE_ENV === 'production';
+const isTestMode = process.env.NODE_ENV !== 'production';
 // Create a new instance of NetworkManager
 const networkManagerInstance = new NetworkManager({
   baseUrl: 'https://api.example.com', // Production base URL
   devBaseUrl: 'https://dev.example.com', // Development base URL
-  testMode: isProduction, // Test mode: false (production), true (development)
+  testMode: isTestMode, // Test mode: false (production), true (development)
   baseOptions: {}, // Axios config options
   errorParams: networkErrorParams, // Error parameters
   isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'
