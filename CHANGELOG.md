@@ -1,4 +1,7 @@
 # Change Log
+## [0.2.1]
+- fixed importing issue in next applications
+
 ## [0.2.0]
 - added both esnext and commonjs supports
 
