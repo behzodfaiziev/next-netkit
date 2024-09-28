@@ -11,23 +11,33 @@ interface NetworkManagerParams {
   testMode: boolean;
   baseOptions: AxiosRequestConfig;
   errorParams: NetworkErrorParams;
-  // isClientSideWeb is a boolean that indicates if the code is running on the client side
-  // here is the code that checks if the code is running on the client side:
-  // typeof window !== 'undefined' && typeof localStorage !== 'undefined'
   isClientSideWeb: boolean;
 }
+
 @injectable()
 class NetworkManager implements INetworkManager {
   private readonly baseUrl: string;
   private readonly devBaseUrl: string;
   private readonly testMode: boolean;
+  /**
+   * Base options for Axios requests.
+   */
   private baseOptions: AxiosRequestConfig;
+  /**
+   * Error handling parameters for keys.
+   */
   private readonly errorParams: NetworkErrorParams;
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
+
+  /**
+   * Indicates if the code is running on the client side.
+   * @example
+   * typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+   */
   private readonly isClientSide: boolean;
 
-  private instance: AxiosInstance;
+  private axiosInstance: AxiosInstance;
 
   constructor({ baseUrl, devBaseUrl, testMode, baseOptions, errorParams, isClientSideWeb }: NetworkManagerParams) {
     this.baseUrl = baseUrl;
@@ -37,7 +47,7 @@ class NetworkManager implements INetworkManager {
     this.errorParams = errorParams;
     this.isClientSide = isClientSideWeb;
 
-    this.instance = axios.create({
+    this.axiosInstance = axios.create({
       baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
       // Additional config options
     });
@@ -88,7 +98,7 @@ class NetworkManager implements INetworkManager {
 
   async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.instance.request({
+      const response: AxiosResponse<T> = await this.axiosInstance.request({
         ...config,
         headers: this.getHeaders(),
       });
