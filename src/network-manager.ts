@@ -1,9 +1,9 @@
-import type {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
-import axios from 'axios';
-import {INetworkManager} from "./network-manager.interface";
-import {NetworkErrorParams} from "./interfaces/network-error-params";
-import {ApiException} from "./error/api-exception";
-import {injectable} from "inversify";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
+import { INetworkManager } from "./network-manager.interface";
+import { NetworkErrorParams } from "./interfaces/network-error-params";
+import { ApiException } from "./error/api-exception";
+import { injectable } from "inversify";
 
 interface NetworkManagerParams {
   baseUrl: string;
@@ -29,14 +29,7 @@ class NetworkManager implements INetworkManager {
 
   private instance: AxiosInstance;
 
-  constructor({
-    baseUrl,
-    devBaseUrl,
-    testMode,
-    baseOptions,
-    errorParams,
-    isClientSideWeb
-  }: NetworkManagerParams) {
+  constructor({ baseUrl, devBaseUrl, testMode, baseOptions, errorParams, isClientSideWeb }: NetworkManagerParams) {
     this.baseUrl = baseUrl;
     this.devBaseUrl = devBaseUrl;
     this.testMode = testMode;
@@ -52,8 +45,8 @@ class NetworkManager implements INetworkManager {
   }
 
   clearTokens(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     this.accessToken = null;
     this.refreshToken = null;
   }
@@ -61,21 +54,21 @@ class NetworkManager implements INetworkManager {
   setAccessToken(token: string): void {
     this.accessToken = token;
     if (this.isClientSide) {
-      localStorage.setItem('accessToken', token);
+      localStorage.setItem("accessToken", token);
     }
   }
 
   setRefreshToken(token: string): void {
     this.refreshToken = token;
     if (this.isClientSide) {
-      localStorage.setItem('refreshToken', token);
+      localStorage.setItem("refreshToken", token);
     }
   }
 
   setTokensFromLocalStorage(): void {
     if (this.isClientSide) {
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
       if (accessToken) {
         this.accessToken = accessToken;
       }
@@ -87,9 +80,9 @@ class NetworkManager implements INetworkManager {
 
   private getHeaders(): Record<string, any> {
     return {
-      ...this.baseOptions.headers as Record<string, any>,
-      ...(this.accessToken ? {'Authorization': `Bearer ${this.accessToken}`} : {}),
-      ...(this.refreshToken ? {'Refresh-Token': this.refreshToken} : {}),
+      ...(this.baseOptions.headers as Record<string, any>),
+      ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+      ...(this.refreshToken ? { "Refresh-Token": this.refreshToken } : {}),
     };
   }
 
@@ -109,4 +102,4 @@ class NetworkManager implements INetworkManager {
   }
 }
 
-export {NetworkManager};
+export { NetworkManager };

@@ -32,7 +32,7 @@ module.exports = {
     "@typescript-eslint/switch-exhaustiveness-check": "warn",
     "no-dupe-else-if": "warn",
     "@typescript-eslint/no-explicit-any": "off", // "warn"
-    "max-params": "off", // ["warn", 4] This rule has been disabled because it's too strict for NestJS injections
+    "max-params": ["warn", 4], // ["warn", 4] This rule has been disabled because it's too strict for NestJS injections
     "no-useless-constructor": "off", // "warn" This rule has been disabled because it's too strict for NestJS injections
     "symbol-description": "off", // "warn" This rule has been disabled because it's too strict for NestJS injections
     "valid-typeof": "off", // "warn" This rule has been disabled because it's too strict for NestJS injections

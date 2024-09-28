@@ -9,6 +9,8 @@
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "eslint \"/**/*.ts\" --fix",
     "test": "jest",
     "testPublish": "rm -rf dist && npm install && npm run build && npm test && npm publish",
     "testPublish:dev": "rm -rf dist && npm install && npm run build && npm publish --tag dev"
