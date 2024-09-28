@@ -1,6 +1,6 @@
 // Relative import makes an error in app build process.
 // So we need to use this import: ../interfaces/network-error-params
-import type {NetworkErrorParams} from "../interfaces/network-error-params";
+import type { NetworkErrorParams } from "../interfaces/network-error-params";
 
 type JsonType = string | { [key: string]: unknown };
 
@@ -12,7 +12,7 @@ export class ApiException extends Error {
     super(message);
     this.statusCode = statusCode;
     this.messages = messages;
-    Object.setPrototypeOf(this, ApiException.prototype);  // Fix the prototype chain
+    Object.setPrototypeOf(this, ApiException.prototype); // Fix the prototype chain
   }
 
   /**
@@ -32,32 +32,25 @@ export class ApiException extends Error {
       }
 
       // If JSON is a string, treat it as the error message
-      if (typeof json === 'string') {
-        return new ApiException(statusCode ?? 400,
-            json.length > 0 ? json : params.jsonIsEmptyError);
+      if (typeof json === "string") {
+        return new ApiException(statusCode ?? 400, json.length > 0 ? json : params.jsonIsEmptyError);
       }
 
       // If JSON is an object (i.e., Axios returns response.data as an object)
-      if (typeof json === 'object' && Object.keys(json).length > 0) {
+      if (typeof json === "object" && Object.keys(json).length > 0) {
         // Handle the case where message is a string or array
-        if (typeof json[params.messageKey] === 'string') {
-          singleMessage =
-              typeof json[params.messageKey] === 'string' ? json[params.messageKey] as string : '';
+        if (typeof json[params.messageKey] === "string") {
+          singleMessage = typeof json[params.messageKey] === "string" ? (json[params.messageKey] as string) : "";
         } else if (Array.isArray(json[params.messageKey])) {
-          multipleMessages =
-              Array.isArray(json[params.messageKey]) ? json[params.messageKey] as string[] : [];
+          multipleMessages = Array.isArray(json[params.messageKey]) ? (json[params.messageKey] as string[]) : [];
           singleMessage = multipleMessages.length > 0 ? multipleMessages[0] : null;
         }
 
         // Get status code from JSON or fallback
-        const code = typeof json[params.statusCodeKey] === 'number'
-            ? json[params.statusCodeKey] as number : (statusCode ?? 400);
+        const code =
+          typeof json[params.statusCodeKey] === "number" ? (json[params.statusCodeKey] as number) : (statusCode ?? 400);
 
-        return new ApiException(
-            code,
-            singleMessage || params.couldNotParseError,
-            multipleMessages,
-        );
+        return new ApiException(code, singleMessage || params.couldNotParseError, multipleMessages);
       }
 
       // If we can't parse the response, return a generic parsing error

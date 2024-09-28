@@ -1,9 +1,9 @@
-import type {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
-import axios from 'axios';
-import {INetworkManager} from "./network-manager.interface";
-import {NetworkErrorParams} from "./interfaces/network-error-params";
-import {ApiException} from "./error/api-exception";
-import {injectable} from "inversify";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
+import { INetworkManager } from "./network-manager.interface";
+import { NetworkErrorParams } from "./interfaces/network-error-params";
+import { ApiException } from "./error/api-exception";
+import { injectable } from "inversify";
 
 interface NetworkManagerParams {
   baseUrl: string;
@@ -11,32 +11,35 @@ interface NetworkManagerParams {
   testMode: boolean;
   baseOptions: AxiosRequestConfig;
   errorParams: NetworkErrorParams;
-  // isClientSideWeb is a boolean that indicates if the code is running on the client side
-  // here is the code that checks if the code is running on the client side:
-  // typeof window !== 'undefined' && typeof localStorage !== 'undefined'
   isClientSideWeb: boolean;
 }
+
 @injectable()
 class NetworkManager implements INetworkManager {
   private readonly baseUrl: string;
   private readonly devBaseUrl: string;
   private readonly testMode: boolean;
+  /**
+   * Base options for Axios requests.
+   */
   private baseOptions: AxiosRequestConfig;
+  /**
+   * Error handling parameters for keys.
+   */
   private readonly errorParams: NetworkErrorParams;
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
+
+  /**
+   * Indicates if the code is running on the client side.
+   * @example
+   * typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+   */
   private readonly isClientSide: boolean;
 
-  private instance: AxiosInstance;
+  private axiosInstance: AxiosInstance;
 
-  constructor({
-    baseUrl,
-    devBaseUrl,
-    testMode,
-    baseOptions,
-    errorParams,
-    isClientSideWeb
-  }: NetworkManagerParams) {
+  constructor({ baseUrl, devBaseUrl, testMode, baseOptions, errorParams, isClientSideWeb }: NetworkManagerParams) {
     this.baseUrl = baseUrl;
     this.devBaseUrl = devBaseUrl;
     this.testMode = testMode;
@@ -44,7 +47,7 @@ class NetworkManager implements INetworkManager {
     this.errorParams = errorParams;
     this.isClientSide = isClientSideWeb;
 
-    this.instance = axios.create({
+    this.axiosInstance = axios.create({
       baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
       // Additional config options
     });
@@ -52,8 +55,8 @@ class NetworkManager implements INetworkManager {
   }
 
   clearTokens(): void {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     this.accessToken = null;
     this.refreshToken = null;
   }
@@ -61,21 +64,21 @@ class NetworkManager implements INetworkManager {
   setAccessToken(token: string): void {
     this.accessToken = token;
     if (this.isClientSide) {
-      localStorage.setItem('accessToken', token);
+      localStorage.setItem("accessToken", token);
     }
   }
 
   setRefreshToken(token: string): void {
     this.refreshToken = token;
     if (this.isClientSide) {
-      localStorage.setItem('refreshToken', token);
+      localStorage.setItem("refreshToken", token);
     }
   }
 
   setTokensFromLocalStorage(): void {
     if (this.isClientSide) {
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
       if (accessToken) {
         this.accessToken = accessToken;
       }
@@ -87,15 +90,15 @@ class NetworkManager implements INetworkManager {
 
   private getHeaders(): Record<string, any> {
     return {
-      ...this.baseOptions.headers as Record<string, any>,
-      ...(this.accessToken ? {'Authorization': `Bearer ${this.accessToken}`} : {}),
-      ...(this.refreshToken ? {'Refresh-Token': this.refreshToken} : {}),
+      ...(this.baseOptions.headers as Record<string, any>),
+      ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+      ...(this.refreshToken ? { "Refresh-Token": this.refreshToken } : {}),
     };
   }
 
   async request<T>(config: AxiosRequestConfig): Promise<T> {
     try {
-      const response: AxiosResponse<T> = await this.instance.request({
+      const response: AxiosResponse<T> = await this.axiosInstance.request({
         ...config,
         headers: this.getHeaders(),
       });
@@ -109,4 +112,4 @@ class NetworkManager implements INetworkManager {
   }
 }
 
-export {NetworkManager};
+export { NetworkManager };

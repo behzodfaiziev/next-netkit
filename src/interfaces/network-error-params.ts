@@ -9,14 +9,14 @@ export class NetworkErrorParams {
   jsonUnsupportedObjectError: string;
 
   constructor({
-    messageKey = 'message',
-    statusCodeKey = 'status',
-    noInternetError = 'No internet connection',
-    couldNotParseError = 'Could not parse the error',
-    jsonNullError = 'Empty error message',
-    jsonIsEmptyError = 'Empty error message',
-    notMapTypeError = 'Could not parse the response: Not a Map type',
-    jsonUnsupportedObjectError = 'Unsupported object',
+    messageKey = "message",
+    statusCodeKey = "status",
+    noInternetError = "No internet connection",
+    couldNotParseError = "Could not parse the error",
+    jsonNullError = "Empty error message",
+    jsonIsEmptyError = "Empty error message",
+    notMapTypeError = "Could not parse the response: Not a Map type",
+    jsonUnsupportedObjectError = "Unsupported object",
   }: {
     messageKey?: string;
     statusCodeKey?: string;
