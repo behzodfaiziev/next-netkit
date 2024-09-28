@@ -1,6 +1,6 @@
 {
   "name": "next-netkit",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Network manager",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

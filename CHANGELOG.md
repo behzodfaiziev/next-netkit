@@ -1,5 +1,8 @@
 # Change Log
 
+## [0.3.3]
+- Exported `ApiException` class
+
 ## [0.3.2]
 
 - added `clearTokens` method to clear access and refresh tokens from local storage and memory
