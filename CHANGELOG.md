@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.4.0]
+
+- Added a .prettierrc configuration file to define Prettier formatting rules. (.prettierrc) by
+  @remidosol
+- Introduced an `ESLint` configuration file with TypeScript support and `Prettier` integration. (
+  eslint.config.js) by @remidosol
+- Updated package.json to include new scripts for formatting and linting, and added necessary
+  dependencies. (package.json) by @remidosol
+- Code Consistency: Updated various files to use double quotes instead of single quotes for string literals to align
+  with the new Prettier configuration. by @remidosol
+
 ## [0.3.3]
 - Exported `ApiException` class
 
