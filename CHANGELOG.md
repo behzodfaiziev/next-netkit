@@ -1,4 +1,8 @@
-# Change Log
+# Changelog
+## [0.4.1]
+
+- updated License to MIT in order to be compliant with other dependencies
+- added testing workflow so that PRs are scanned before reviewed
 
 ## [0.4.0]
 
