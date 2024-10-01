@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "Behzodjon Faiziev",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/behzodfaiziev/next-netkit.git"

@@ -272,4 +272,10 @@ export {container};
 
 ## License
 
-This project is licensed under the ISC License.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+### Dependencies
+
+- **axios** - MIT License. See [axios repository](https://github.com/axios/axios) for license details.
+- **inversify** - MIT License. See [inversify repository](https://github.com/inversify/InversifyJS) for license details.
+- **reflect-metadata** - Apache-2.0 License. See [reflect-metadata repository](https://github.com/rbuckton/reflect-metadata) for license details.
