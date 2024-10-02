@@ -14,6 +14,9 @@ development (TDD) by making network interactions mockable and testable.
   - [Setting Up the NetworkManager](#setting-up-the-networkmanager)
   - [Token Management](#token-management)
   - [Making Requests](#making-requests)
+    - [Request](#request)
+    - [RequestList](#requestlist)
+    - [RequestVoid](#requestvoid)
   - [Making Requests according to the Clean Architecture](#making-requests-according-to-the-clean-architecture)
   - [Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)
 - [Integration with Inversify for Dependency Injection](#integration-with-inversify-for-dependency-injection)
@@ -88,21 +91,21 @@ networkManager.setAccessToken('your-access-token');
 networkManager.setRefreshToken('your-refresh-token');
 ```
 
-### Making Requests:
+## Making Requests:
 
-`Next-Netkit` makes HTTP requests using the `request` method, which wraps Axios'
-request functionality. You can make requests like this:
+### Request:
 
+`request` is used to fetch or send data where a single response model is expected.
 ```typescript
-// Example GET request
-const response = await networkManager.request<BookEntity>({
+// Example GET request to fetch a single model
+const product = await networkManager.request<ProductModel>({
   method: RequestMethod.GET,
-  url: "/api/v1/book/1",
+  url: "/api/product/1",
 });
 /// response.data is of type BookEntity
 
 
-// Example POST request
+// Example POST request and get response
 const signInResponse = await networkManager.request<SignInResponseDto>({
   method: RequestMethod.POST,
   url: "/api/auth/sign-in",
@@ -111,7 +114,35 @@ const signInResponse = await networkManager.request<SignInResponseDto>({
 /// signInResponse.data is of type SignInResponseDto
 ```
 
-### Making Requests according to the Clean Architecture
+### RequestList:
+
+`requestList` is used when you expect the API to return an array of items.
+
+```typescript
+// Example GET request to fetch a list of products
+const products = await networkManager.requestList<ProductModel>({
+  method: RequestMethod.GET,
+  url: "/api/v1/products",
+});
+/// response.data is of type ProductModel[]
+```
+
+This method ensures the response is an array and throws an error if a non-list is returned.
+
+### RequestVoid:
+
+`requestVoid` is used for requests where no data is expected in return (e.g., DELETE or POST
+operations that don't return any data).
+
+```typescript
+// Example DELETE request with no response body expected
+await networkManager.requestVoid({
+  method: RequestMethod.DELETE,
+  url: "/api/v1/products/1",
+});
+```
+
+## Making Requests according to the Clean Architecture
 
 Using the Clean Architecture, you can create a `RemoteDataSource` class that implements an
 interface, which can be injected into your repository class.
@@ -165,7 +196,7 @@ export class AuthRepository implements IAuthRepository {
 }
 ````
 
-### Error Handling with ApiException according to the Clean Architecture
+## Error Handling with ApiException according to the Clean Architecture
 
 All errors returned by the network manager will be transformed into `ApiException` instances,
 providing consistent error-handling across your app. Which are caught with a try-catch block.

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.6.1]
+
+- updated documentation
+
 ## [0.6.0]
 
 - added more options for requests: `requestList`, `requestVoid`
