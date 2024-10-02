@@ -14,6 +14,30 @@ export interface INetworkManager {
     data?: any;
   }): Promise<T>;
 
+  requestList<T>({
+    url,
+    config,
+    method,
+    data,
+  }: {
+    url: string;
+    config?: AxiosRequestConfig;
+    method: RequestMethod;
+    data?: any;
+  }): Promise<T[]>;
+
+  requestVoid({
+    url,
+    config,
+    method,
+    data,
+  }: {
+    url: string;
+    config?: AxiosRequestConfig;
+    method: RequestMethod;
+    data?: any;
+  }): Promise<void>;
+
   setAccessToken(token: string): void;
 
   setRefreshToken(token: string): void;

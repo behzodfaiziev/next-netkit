@@ -88,7 +88,7 @@ networkManager.setAccessToken('your-access-token');
 networkManager.setRefreshToken('your-refresh-token');
 ```
 
-### Making Requests
+### Making Requests:
 
 `Next-Netkit` makes HTTP requests using the `request` method, which wraps Axios'
 request functionality. You can make requests like this:
@@ -96,16 +96,16 @@ request functionality. You can make requests like this:
 ```typescript
 // Example GET request
 const response = await networkManager.request<BookEntity>({
-  method: 'GET',
-  url: '/api/v1/book/1',
+  method: RequestMethod.GET,
+  url: "/api/v1/book/1",
 });
 /// response.data is of type BookEntity
 
 
 // Example POST request
 const signInResponse = await networkManager.request<SignInResponseDto>({
-  method: 'POST',
-  url: '/api/v1/auth/sign_in',
+  method: RequestMethod.POST,
+  url: "/api/auth/sign-in",
   data: signInRequestDto,
 });
 /// signInResponse.data is of type SignInResponseDto
