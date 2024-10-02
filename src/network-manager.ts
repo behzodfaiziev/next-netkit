@@ -98,13 +98,29 @@ class NetworkManager implements INetworkManager {
     };
   }
 
-  async request<T>({ config, method }: { config: AxiosRequestConfig; method: RequestMethod }): Promise<T> {
+  async request<T>({
+    url,
+    config,
+    method,
+    data,
+  }: {
+    url: string;
+    config?: AxiosRequestConfig;
+    method: RequestMethod;
+    data?: any;
+  }): Promise<T> {
+    // If config is not provided, create an empty object
+    if (!config) {
+      config = {};
+    }
+
+    config.url = url;
+    config.data = data;
+    config.method = RequestMethod.toString(method);
+    config.headers = this.getHeaders();
+
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.request({
-        ...config,
-        method: RequestMethod.toString(method),
-        headers: this.getHeaders(),
-      });
+      const response: AxiosResponse<T> = await this.axiosInstance.request(config);
       return response.data;
     } catch (error: any) {
       if (error.response) {

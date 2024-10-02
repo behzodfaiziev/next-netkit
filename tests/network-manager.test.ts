@@ -79,13 +79,12 @@ describe("NetworkManager", () => {
     const responseData = { data: "response" };
     mockedAxios.request.mockResolvedValue({ data: responseData });
 
-    const config = { url: "/endpoint" };
-    const data = await networkManager.request({ config, method: RequestMethod.GET });
+    const config = { url: "/endpoint", method: RequestMethod.GET };
+    const data = await networkManager.request(config);
 
     expect(data).toBe(responseData);
     expect(mockedAxios.request).toHaveBeenCalledWith({
       ...config,
-      method: RequestMethod.GET,
       headers: {
         "Content-Type": "application/json",
       },
@@ -105,15 +104,11 @@ describe("NetworkManager", () => {
 
     mockedAxios.request.mockRejectedValue(errorResponse); // Mock rejected value for axios
 
-    const config = { url: "/endpoint", method: "GET" };
+    const config = { url: "/endpoint", method: RequestMethod.GET };
 
-    await expect(networkManager.request({ config, method: RequestMethod.GET })).rejects.toThrow(ApiException);
+    await expect(networkManager.request(config)).rejects.toThrow(ApiException);
 
     // Optionally, you can also check if `ApiException` was thrown with the correct properties
-    await expect(networkManager.request({ config, method: RequestMethod.GET })).rejects.toThrow(
-      expect.objectContaining({
-        message: "error",
-      })
-    );
+    await expect(networkManager.request(config)).rejects.toThrow(expect.objectContaining({ message: "error" }));
   });
 });

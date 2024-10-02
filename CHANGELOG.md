@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.5.2-dev]
+
+- updated `request` to get url and data directly from params
+
+## [0.5.1-dev]
+
+- fixed importing issues
+
+## [0.5.0-dev]  Note: This version has breaking changes.
+
+- added `RequestMethod` enum to define request methods so that it make the code more stable
+- Deprecated: `request` method no longer accepts positional parameters. It now accepts named
+  parameters.
+  Here is an example of how to use the new `request` method:
+
+```typescript
+/// Before
+return this.networkManager.request<SignInResponseDto>({
+  method: "POST",
+  url: `/api/auth/sign-in`,
+  data: dto,
+});
+
+/// After
+return this.networkManager.request<SignInResponseDto>({
+  method: RequestMethod.POST,
+  config: {
+    url: `/api/v1/auth/sign_in`, data: dto,
+  },
+});
+```
+
 ## [0.4.2]
 
 - fixed importing issue
