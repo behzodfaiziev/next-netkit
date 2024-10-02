@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.6.0]
+
+- added more options for requests: `requestList`, `requestVoid`
+- added integration tests
+- updated README.md
+
+## [0.5.3]
+
+- added `RequestMethod` enum to define request methods so that it make the code more stable
+- Deprecated: `request` method no longer accepts positional parameters. It now accepts named
+  parameters: `url`, `data`, `method` and `config:?`.
+  Here is an example of how to use the new `request` method:
+
+```typescript
+return this.networkManager.request<SignInResponseDto>({
+  method: RequestMethod.POST,
+  url: `/api/auth/sign-in`,
+  data: dto,
+});
+```
+
 ## [0.5.3-dev]
 
 - made `config` optional in `request` method

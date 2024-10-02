@@ -109,11 +109,7 @@ class NetworkManager implements INetworkManager {
     method: RequestMethod;
     data?: any;
   }): Promise<T> {
-    // If config is not provided, create an empty object
-    if (!config) {
-      config = {};
-    }
-
+    config = config || {};
     config.url = url;
     config.data = data;
     config.method = RequestMethod.toString(method);
@@ -121,7 +117,75 @@ class NetworkManager implements INetworkManager {
 
     try {
       const response: AxiosResponse<T> = await this.axiosInstance.request(config);
+      if (Array.isArray(response.data)) {
+        throw new ApiException(400, "Response is not an object");
+      }
       return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Handles a request and returns a list of items.
+   */
+  async requestList<T>({
+    url,
+    config,
+    method,
+    data,
+  }: {
+    url: string;
+    config?: AxiosRequestConfig;
+    method: RequestMethod;
+    data?: any;
+  }): Promise<T[]> {
+    config = config || {};
+    config.url = url;
+    config.data = data;
+    config.method = RequestMethod.toString(method);
+    config.headers = this.getHeaders();
+
+    try {
+      const response: AxiosResponse<T[]> = await this.axiosInstance.request(config);
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        throw new ApiException(400, "Response is not a list");
+      }
+    } catch (error: any) {
+      if (error.response) {
+        throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Handles requests that do not return any data.
+   */
+  async requestVoid({
+    url,
+    config,
+    method,
+    data,
+  }: {
+    url: string;
+    config?: AxiosRequestConfig;
+    method: RequestMethod;
+    data?: any;
+  }): Promise<void> {
+    config = config || {};
+    config.url = url;
+    config.data = data;
+    config.method = RequestMethod.toString(method);
+    config.headers = this.getHeaders();
+
+    try {
+      await this.axiosInstance.request(config);
     } catch (error: any) {
       if (error.response) {
         throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);

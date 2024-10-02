@@ -1,84 +1,130 @@
 import "reflect-metadata";
-import axios, { AxiosInstance } from "axios";
-import { jest } from "@jest/globals";
-import { ApiException, NetworkErrorParams, NetworkManager } from "../..";
+import { NetworkManager } from "../../src/network-manager";
+import { ApiException } from "../../src/error/api-exception";
+import { RequestMethod } from "../../src/enums/request-method.enum";
+import { INetworkManager } from "../../src/network-manager.interface";
+import { NetworkErrorParams } from "../../src/interfaces/network-error-params";
 
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+describe("NetworkManager Integration Test", () => {
+  let networkManager: INetworkManager;
+  const errorParams: NetworkErrorParams = new NetworkErrorParams({
+    messageKey: "error_message",
+    statusCodeKey: "status_code",
+  });
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: { [key: string]: string } = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => (store[key] = value),
-    removeItem: (key: string) => delete store[key],
-    clear: () => (store = {}),
-  };
-})();
-
-Object.defineProperty(global, "localStorage", { value: localStorageMock });
-
-describe("FakeStoreApi Integration Test", () => {
-  let networkManager: NetworkManager;
-  const baseUrl = "https://fakestoreapi.com";
-  const devBaseUrl = "https://fakestoreapi.com";
-  const testMode = false;
-  const baseOptions = { headers: { "Content-Type": "application/json" } };
-  const errorParams: NetworkErrorParams = new NetworkErrorParams({});
-  const isClientSideWeb = true;
-
-  beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
-
-    // Mock axios.create to return an instance with interceptors
-    mockedAxios.create.mockReturnValue({
-      ...mockedAxios,
-    } as unknown as AxiosInstance); // Cast it as any to avoid type errors
-
+  beforeAll(() => {
     networkManager = new NetworkManager({
-      baseUrl,
-      devBaseUrl,
-      testMode,
-      baseOptions,
+      baseUrl: "https://fakestoreapi.com",
+      devBaseUrl: "https://dev.fakestoreapi.com",
+      testMode: false,
+      baseOptions: { headers: { "Content-Type": "application/json" } },
       errorParams,
-      isClientSideWeb,
+      isClientSideWeb: false,
     });
   });
 
-  test("Request a Single Model - Success Case", async () => {
-    const mockResponse = {
-      data: [{ id: 1, title: "Test Product" }],
-    };
-    mockedAxios.request.mockResolvedValue(mockResponse);
+  // Request List Success Case
+  test("should fetch products successfully (requestList)", async () => {
+    const response = await networkManager.requestList<ProductModel>({
+      url: "/products",
+      method: RequestMethod.GET,
+    });
 
-    const config = { url: "/products", method: "GET" };
-    const response = await networkManager.request(config);
-
-    expect(response).toBeDefined();
-    expect(response).toBeInstanceOf(Array);
-    expect(response).not.toHaveLength(0);
+    expect(Array.isArray(response)).toBe(true);
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((product) => {
+      testProductModel(product);
+      expect(product.rating).toHaveProperty("rate");
+      expect(product.rating).toHaveProperty("count");
+    });
   });
 
-  test("Request a Single Model - Failure Case: Wrong API", async () => {
-    const errorResponse = {
-      response: {
-        data: { message: "Not Found" },
-        status: 404,
+  // Request List Failure Case: Wrong API
+  test("should handle 404 error for incorrect endpoint (requestList)", async () => {
+    try {
+      await networkManager.requestList<ProductModel>({
+        url: "/invalid-endpoint",
+        method: RequestMethod.GET,
+      });
+    } catch (error) {
+      expect((error as ApiException).statusCode).toBe(404);
+    }
+  });
+
+  // Request a Single Model - Success Case
+  test("should fetch a single product successfully (request)", async () => {
+    const response = await networkManager.request<ProductModel>({
+      url: "/products/1",
+      method: RequestMethod.GET,
+    });
+
+    testProductModel(response);
+  });
+
+  // Request a Single Model - Failure Case: Wrong API
+  test("should handle 404 error for incorrect endpoint (request)", async () => {
+    try {
+      await networkManager.request<ProductModel>({
+        url: "/invalid-endpoint",
+        method: RequestMethod.GET,
+      });
+    } catch (error) {
+      expect((error as ApiException).statusCode).toBe(404);
+    }
+  });
+
+  // Wrong method called on Manager: requestModel expecting list but received a single object
+  test("should handle wrong method call: requestModel expecting list but got object", async () => {
+    try {
+      await networkManager.request<ProductModel>({
+        url: "/products", // Single product instead of list
+        method: RequestMethod.GET,
+      });
+    } catch (error) {
+      expect((error as ApiException).message).toBe("Response is not an object");
+    }
+  });
+
+  // Request Void - Success Case
+  test("should make a successful POST request (request)", async () => {
+    const response = await networkManager.request<ProductModel>({
+      url: "/products",
+      method: RequestMethod.POST,
+      data: {
+        title: "Test Product",
+        price: 10,
+        description: "This is a test product",
+        image: "https://fakestoreapi.com/img/test-image.jpg",
+        category: "test-category",
       },
-    };
-    mockedAxios.request.mockRejectedValue(errorResponse);
-
-    const config = { url: "/products", method: "GET" };
-
-    await expect(networkManager.request(config)).rejects.toThrow(ApiException);
-    await expect(networkManager.request(config)).rejects.toThrow(
-      expect.objectContaining({
-        message: "Not Found",
-      })
-    );
+    });
+    testProductModel(response);
+    expect(response.title).toBe("Test Product");
+    expect(response.price).toBe(10);
+    expect(response.description).toBe("This is a test product");
+    expect(response.image).toBe("https://fakestoreapi.com/img/test-image.jpg");
+    expect(response.category).toBe("test-category");
   });
 
-  // Additional tests can be added here as needed
+  // Request Void - Failure Case
+  test("should handle error for DELETE request (requestVoid)", async () => {
+    try {
+      await networkManager.requestVoid({
+        url: "/invalid-endpoint",
+        method: RequestMethod.DELETE,
+      });
+    } catch (error) {
+      expect((error as ApiException).statusCode).toBe(404);
+    }
+  });
 });
+
+function testProductModel(response: ProductModel) {
+  expect(response).toBeInstanceOf(Object);
+  expect(response).toHaveProperty("id");
+  expect(response).toHaveProperty("title");
+  expect(response).toHaveProperty("price");
+  expect(response).toHaveProperty("description");
+  expect(response).toHaveProperty("category");
+  expect(response).toHaveProperty("image");
+}
