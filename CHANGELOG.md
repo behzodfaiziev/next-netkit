@@ -1,4 +1,18 @@
 # Changelog
+## [0.5.0+1-dev]  Note: This version has breaking changes.
+
+- added `RequestMethod` enum to define request methods so that it make the code more stable 
+- Deprecated: `request` method no longer accepts positional parameters. It now accepts named parameters. 
+  Here is an example of how to use the new `request` method:
+
+```typescript
+// Note: working on
+// const response = await networkManager.request({
+//   method: RequestMethod.GET,
+//   url: '/users',
+//   data: data,
+```
+
 ## [0.4.1]
 
 - updated License to MIT in order to be compliant with other dependencies
