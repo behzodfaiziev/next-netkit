@@ -1,8 +1,8 @@
 {
-  "extends": "./tsconfig.json",  // Extend your base config
+  "extends": "./tsconfig.json", // Extend your base config
   "compilerOptions": {
-    "module": "esnext",           // Set ES Module for modern bundlers
-    "outDir": "./dist/esm",       // Output for ES Modules
+    "module": "esnext", // Set ES Module for modern bundlers
+    "outDir": "./dist/esm", // Output for ES Modules
     "target": "es6"
   },
   "exclude": ["node_modules"]

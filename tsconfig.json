@@ -28,10 +28,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "src",
-    "index.ts",
-    "tests"
-  ],
+  "include": ["src", "index.ts", "tests"],
   "exclude": ["node_modules"]
 }

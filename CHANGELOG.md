@@ -29,7 +29,7 @@ return this.networkManager.request<SignInResponseDto>({
 
 - made `config` optional in `request` method
 
-## [0.5.2-dev]  Note: This version has breaking changes.
+## [0.5.2-dev] Note: This version has breaking changes.
 
 - updated `request` to get `url` and `data` directly from params
   Here is an example of how to use the new `request` method:
@@ -40,7 +40,8 @@ return this.networkManager.request<SignInResponseDto>({
 return this.networkManager.request<SignInResponseDto>({
   method: RequestMethod.POST,
   config: {
-    url: `/api/auth/sign-in`, data: dto,
+    url: `/api/auth/sign-in`,
+    data: dto,
   },
 });
 /// After
@@ -55,7 +56,7 @@ return this.networkManager.request<SignInResponseDto>({
 
 - fixed importing issues
 
-## [0.5.0-dev]  Note: This version has breaking changes.
+## [0.5.0-dev] Note: This version has breaking changes.
 
 - added `RequestMethod` enum to define request methods so that it make the code more stable
 - Deprecated: `request` method no longer accepts positional parameters. It now accepts named
@@ -74,7 +75,8 @@ return this.networkManager.request<SignInResponseDto>({
 return this.networkManager.request<SignInResponseDto>({
   method: RequestMethod.POST,
   config: {
-    url: `/api/v1/auth/sign_in`, data: dto,
+    url: `/api/v1/auth/sign_in`,
+    data: dto,
   },
 });
 ```
@@ -100,6 +102,7 @@ return this.networkManager.request<SignInResponseDto>({
   with the new Prettier configuration. by @remidosol
 
 ## [0.3.3]
+
 - Exported `ApiException` class
 
 ## [0.3.2]
@@ -113,12 +116,12 @@ return this.networkManager.request<SignInResponseDto>({
 
 ```typescript
 const networkManagerInstance = new NetworkManager({
-  baseUrl: 'https://api.example.com', // Production base URL
-  devBaseUrl: 'https://dev.example.com', // Development base URL
+  baseUrl: "https://api.example.com", // Production base URL
+  devBaseUrl: "https://dev.example.com", // Development base URL
   testMode: false, // Test mode: false (production), true (development)
   baseOptions: {}, // Axios config options
   errorParams: networkErrorParams, // Error parameters
-  isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+  isClientSideWeb: typeof window !== "undefined" && typeof localStorage !== "undefined",
 });
 ```
 
@@ -126,11 +129,11 @@ const networkManagerInstance = new NetworkManager({
 
 ```typescript
 const networkManager = new NetworkManager(
-        'https://api.example.com', // Production base URL
-        'https://dev.example.com', // Development base URL
-        false, // Test mode: false (production), true (development)
-        {}, // Axios config options
-        networkErrorParams // Error parameters
+  "https://api.example.com", // Production base URL
+  "https://dev.example.com", // Development base URL
+  false, // Test mode: false (production), true (development)
+  {}, // Axios config options
+  networkErrorParams // Error parameters
 );
 ```
 
@@ -139,9 +142,11 @@ const networkManager = new NetworkManager(
 - added `isClientSideWeb` method to check if the code is running on the client side web
 
 ## [0.2.1]
+
 - fixed importing issue in next applications
 
 ## [0.2.0]
+
 - added both esnext and commonjs supports
 
 ## [0.1.4]
@@ -167,4 +172,3 @@ const networkManager = new NetworkManager(
 
 - Added setAccessToken and setRefreshToken methods to save in local storage
 - improved internal handling of baseUrl
-

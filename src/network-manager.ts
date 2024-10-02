@@ -1,6 +1,6 @@
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 
 import { INetworkManager } from "./network-manager.interface";
 import { NetworkErrorParams } from "./interfaces/network-error-params";

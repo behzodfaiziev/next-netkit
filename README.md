@@ -51,30 +51,30 @@ You can create an instance of NetworkManager by passing the base URLs, mode
 (development or production), Axios configuration options, and error-handling parameters.
 
 ```typescript
-import {NetworkErrorParams, NetworkManager} from 'next-netkit';
+import { NetworkErrorParams, NetworkManager } from "next-netkit";
 
 // Define your error-handling parameters
 const networkErrorParams: NetworkErrorParams = {
-  messageKey: 'message',
-  statusCodeKey: 'status',
-  couldNotParseError: 'Could not parse error',
-  jsonIsEmptyError: 'JSON is empty',
-  noInternetError: 'No internet connection',
-  jsonNullError: 'JSON is null',
-  jsonUnsupportedObjectError: 'JSON is unsupported object',
-  notMapTypeError: 'Not map type',
+  messageKey: "message",
+  statusCodeKey: "status",
+  couldNotParseError: "Could not parse error",
+  jsonIsEmptyError: "JSON is empty",
+  noInternetError: "No internet connection",
+  jsonNullError: "JSON is null",
+  jsonUnsupportedObjectError: "JSON is unsupported object",
+  notMapTypeError: "Not map type",
 };
 /// In here NODE_ENV is an environment variable that is set to 'production' or 'development'
 /// It may differ according to your project setup
-const isTestMode = process.env.NODE_ENV !== 'production';
+const isTestMode = process.env.NODE_ENV !== "production";
 // Create a new instance of NetworkManager
 const networkManagerInstance = new NetworkManager({
-  baseUrl: 'https://api.example.com', // Production base URL
-  devBaseUrl: 'https://dev.example.com', // Development base URL
+  baseUrl: "https://api.example.com", // Production base URL
+  devBaseUrl: "https://dev.example.com", // Development base URL
   testMode: isTestMode, // Test mode: false (production), true (development)
   baseOptions: {}, // Axios config options
   errorParams: networkErrorParams, // Error parameters
-  isClientSideWeb: typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+  isClientSideWeb: typeof window !== "undefined" && typeof localStorage !== "undefined",
 });
 ```
 
@@ -86,9 +86,9 @@ future requests.
 
 ```typescript
 // Set access token
-networkManager.setAccessToken('your-access-token');
+networkManager.setAccessToken("your-access-token");
 // Set refresh token
-networkManager.setRefreshToken('your-refresh-token');
+networkManager.setRefreshToken("your-refresh-token");
 ```
 
 ## Making Requests:
@@ -96,6 +96,7 @@ networkManager.setRefreshToken('your-refresh-token');
 ### Request:
 
 `request` is used to fetch or send data where a single response model is expected.
+
 ```typescript
 // Example GET request to fetch a single model
 const product = await networkManager.request<ProductModel>({
@@ -103,7 +104,6 @@ const product = await networkManager.request<ProductModel>({
   url: "/api/product/1",
 });
 /// response.data is of type BookEntity
-
 
 // Example POST request and get response
 const signInResponse = await networkManager.request<SignInResponseDto>({
@@ -156,15 +156,13 @@ export interface IAuthRemoteDataSource {
 /// src/feature-name/data/datasources/auth-remote-datasource.ts
 @injectable()
 export class AuthRemoteDataSource implements IAuthRemoteDataSource {
-  constructor(
-          @inject('INetworkManager') private networkManager: INetworkManager
-  ) {}
+  constructor(@inject("INetworkManager") private networkManager: INetworkManager) {}
 
   async signIn(dto: SignInDto): Promise<SignInResponseDto> {
     const result = await this.networkManager.request<SignInResponseDto>({
-      method: 'POST',
+      method: "POST",
       url: `/api/auth/sign-in`,
-      data: dto
+      data: dto,
     });
 
     this.networkManager.setAccessToken(result.accesToken);
@@ -181,8 +179,8 @@ network requests.
 @injectable()
 export class AuthRepository implements IAuthRepository {
   constructor(
-          @inject('IAuthRemoteDataSource') private remoteDataSource: IAuthRemoteDataSource,
-          @inject('IAuthLocalDataSource') private localDataSource: IAuthLocalDataSource
+    @inject("IAuthRemoteDataSource") private remoteDataSource: IAuthRemoteDataSource,
+    @inject("IAuthLocalDataSource") private localDataSource: IAuthLocalDataSource
   ) {}
 
   async signIn(dto: SignInDto): Promise<void> {
@@ -194,7 +192,7 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 }
-````
+```
 
 ## Error Handling with ApiException according to the Clean Architecture
 
@@ -205,9 +203,7 @@ providing consistent error-handling across your app. Which are caught with a try
 /// AuthController.ts
 @injectable()
 export class AuthController {
-  constructor(
-          @inject(SignIn) private signInUseCase: SignIn,
-  ) {}
+  constructor(@inject(SignIn) private signInUseCase: SignIn) {}
 
   async handleSignIn(dto: SignInDto): Promise<void> {
     try {
@@ -216,7 +212,6 @@ export class AuthController {
       throw error;
     }
   }
-
 }
 
 /// sign-in.tsx
@@ -225,10 +220,10 @@ const signInController = container.get<AuthController>(AuthController);
 
 const handleSignIn = async () => {
   try {
-    const dto: SignInDto = {email, password};
+    const dto: SignInDto = { email, password };
     setLoading(true);
     await signInController.handleSignIn(dto);
-    router.push('/');
+    router.push("/");
   } catch (err) {
     setLoading(false);
     setError((err as ApiException).message);
@@ -249,37 +244,36 @@ Create a module for the network manager using `Inversify`.
 
 ```typescript
 // network.container.ts
-import {ContainerModule, interfaces} from 'inversify';
-import {INetworkManager, NetworkManager, NetworkErrorParams} from 'next-netkit';
+import { ContainerModule, interfaces } from "inversify";
+import { INetworkManager, NetworkManager, NetworkErrorParams } from "next-netkit";
 
 // Define error-handling parameters
 const networkErrorParams: NetworkErrorParams = {
-  messageKey: 'message',
-  statusCodeKey: 'status',
-  couldNotParseError: 'Could not parse error',
-  jsonIsEmptyError: 'JSON is empty',
-  noInternetError: 'No internet connection',
-  jsonNullError: 'JSON is null',
-  jsonUnsupportedObjectError: 'JSON is unsupported object',
-  notMapTypeError: 'Not map type',
+  messageKey: "message",
+  statusCodeKey: "status",
+  couldNotParseError: "Could not parse error",
+  jsonIsEmptyError: "JSON is empty",
+  noInternetError: "No internet connection",
+  jsonNullError: "JSON is null",
+  jsonUnsupportedObjectError: "JSON is unsupported object",
+  notMapTypeError: "Not map type",
 };
 
 // Create NetworkManager instance
 const networkManagerInstance = new NetworkManager(
-        'https://api.example.com',
-        'https://dev.example.com',
-        false,
-        {},
-        networkErrorParams
+  "https://api.example.com",
+  "https://dev.example.com",
+  false,
+  {},
+  networkErrorParams
 );
 
 // Create a network container module
 const networkContainer = new ContainerModule((bind: interfaces.Bind) => {
-  bind<INetworkManager>('INetworkManager').toConstantValue(networkManagerInstance);
+  bind<INetworkManager>("INetworkManager").toConstantValue(networkManagerInstance);
 });
 
-export {networkContainer};
-
+export { networkContainer };
 ```
 
 ### Merging Containers
@@ -288,9 +282,9 @@ You can merge multiple containers, including the network container, like so:
 
 ```typescript
 // main.container.ts
-import {Container} from 'inversify';
-import {authContainer} from './auth/auth.container';
-import {networkContainer} from './network.container';
+import { Container } from "inversify";
+import { authContainer } from "./auth/auth.container";
+import { networkContainer } from "./network.container";
 
 const container = new Container();
 
@@ -298,7 +292,7 @@ const container = new Container();
 container.load(authContainer);
 container.load(networkContainer);
 
-export {container};
+export { container };
 ```
 
 ## License
