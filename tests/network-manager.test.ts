@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import axios, { AxiosInstance } from "axios";
+import { jest } from "@jest/globals";
 import { NetworkManager } from "../src/network-manager";
 import { NetworkErrorParams } from "../src/interfaces/network-error-params";
 import { ApiException } from "../src/error/api-exception";
-import { jest } from "@jest/globals";
+import { RequestMethod } from "../src/enums/request-method.enum";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -78,12 +79,13 @@ describe("NetworkManager", () => {
     const responseData = { data: "response" };
     mockedAxios.request.mockResolvedValue({ data: responseData });
 
-    const config = { url: "/endpoint", method: "GET" };
-    const data = await networkManager.request(config);
+    const config = { url: "/endpoint" };
+    const data = await networkManager.request({ config, method: RequestMethod.GET });
 
     expect(data).toBe(responseData);
     expect(mockedAxios.request).toHaveBeenCalledWith({
       ...config,
+      method: RequestMethod.GET,
       headers: {
         "Content-Type": "application/json",
       },
@@ -105,10 +107,10 @@ describe("NetworkManager", () => {
 
     const config = { url: "/endpoint", method: "GET" };
 
-    await expect(networkManager.request(config)).rejects.toThrow(ApiException);
+    await expect(networkManager.request({ config, method: RequestMethod.GET })).rejects.toThrow(ApiException);
 
     // Optionally, you can also check if `ApiException` was thrown with the correct properties
-    await expect(networkManager.request(config)).rejects.toThrow(
+    await expect(networkManager.request({ config, method: RequestMethod.GET })).rejects.toThrow(
       expect.objectContaining({
         message: "error",
       })
