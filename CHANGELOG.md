@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.6.2]
+
+- updated github actions to use strict check on formatting
+- updated README.md
+
 ## [0.6.1]
 
 - updated documentation
