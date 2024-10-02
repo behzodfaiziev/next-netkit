@@ -1,9 +1,11 @@
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
+import { injectable } from "inversify";
+
 import { INetworkManager } from "./network-manager.interface";
 import { NetworkErrorParams } from "./interfaces/network-error-params";
 import { ApiException } from "./error/api-exception";
-import { injectable } from "inversify";
+import { RequestMethod } from "./enums/request-method.enum";
 
 interface NetworkManagerParams {
   baseUrl: string;
@@ -96,10 +98,11 @@ class NetworkManager implements INetworkManager {
     };
   }
 
-  async request<T>(config: AxiosRequestConfig): Promise<T> {
+  async request<T>({ config, method }: { config: AxiosRequestConfig; method: RequestMethod }): Promise<T> {
     try {
       const response: AxiosResponse<T> = await this.axiosInstance.request({
         ...config,
+        method: RequestMethod.toString(method),
         headers: this.getHeaders(),
       });
       return response.data;

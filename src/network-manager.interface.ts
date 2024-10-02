@@ -1,7 +1,8 @@
 import type { AxiosRequestConfig } from "axios";
+import { RequestMethod } from "./enums/request-method.enum";
 
 export interface INetworkManager {
-  request<T>(config: AxiosRequestConfig): Promise<T>;
+  request<T>({ config, method }: { config: AxiosRequestConfig; method: RequestMethod }): Promise<T>;
 
   setAccessToken(token: string): void;
 
