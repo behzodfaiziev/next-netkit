@@ -9,7 +9,7 @@ export interface INetworkManager {
     data,
   }: {
     url: string;
-    config: AxiosRequestConfig;
+    config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
   }): Promise<T>;

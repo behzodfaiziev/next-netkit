@@ -1,8 +1,30 @@
 # Changelog
 
-## [0.5.2-dev]
+## [0.5.3-dev]
 
-- updated `request` to get url and data directly from params
+- made `config` optional in `request` method
+
+## [0.5.2-dev]  Note: This version has breaking changes.
+
+- updated `request` to get `url` and `data` directly from params
+  Here is an example of how to use the new `request` method:
+
+```typescript
+/// Before
+
+return this.networkManager.request<SignInResponseDto>({
+  method: RequestMethod.POST,
+  config: {
+    url: `/api/auth/sign-in`, data: dto,
+  },
+});
+/// After
+return this.networkManager.request<SignInResponseDto>({
+  method: RequestMethod.POST,
+  url: `/api/auth/sign-in`,
+  data: dto,
+});
+```
 
 ## [0.5.1-dev]
 
