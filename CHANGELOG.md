@@ -1,4 +1,9 @@
 # Changelog
+
+## [0.4.2]
+
+- fixed importing issue
+
 ## [0.4.1]
 
 - updated License to MIT in order to be compliant with other dependencies
