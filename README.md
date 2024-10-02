@@ -160,7 +160,7 @@ export class AuthRemoteDataSource implements IAuthRemoteDataSource {
 
   async signIn(dto: SignInDto): Promise<SignInResponseDto> {
     const result = await this.networkManager.request<SignInResponseDto>({
-      method: "POST",
+      method: RequestMethod.POST,
       url: `/api/auth/sign-in`,
       data: dto,
     });
