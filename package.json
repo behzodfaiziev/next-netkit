@@ -12,9 +12,9 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "eslint \"/**/*.ts\" --fix",
     "test": "rm -rf dist && npm install && npm run format && npm run lint && npm run build && jest",
-    "testPublish": "npm run test && npm publish",
-    "testPublish:dev": "npm run test && npm publish --tag dev"
-  },
+    "distCheck": "[ -d dist ] || { echo 'dist folder does not exist'; exit 1; }",
+    "testPublish": "npm run distCheck && npm run test && npm publish",
+    "testPublish:dev": "npm run distCheck && npm run test && npm publish --tag dev"  },
   "keywords": [],
   "author": "Behzodjon Faiziev",
   "license": "MIT",
