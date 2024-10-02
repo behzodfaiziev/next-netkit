@@ -1,17 +1,8 @@
 # Changelog
-## [0.5.0+1-dev]  Note: This version has breaking changes.
 
-- added `RequestMethod` enum to define request methods so that it make the code more stable 
-- Deprecated: `request` method no longer accepts positional parameters. It now accepts named parameters. 
-  Here is an example of how to use the new `request` method:
+## [0.4.2]
 
-```typescript
-// Note: working on
-// const response = await networkManager.request({
-//   method: RequestMethod.GET,
-//   url: '/users',
-//   data: data,
-```
+- fixed importing issue
 
 ## [0.4.1]
 
@@ -56,11 +47,11 @@ const networkManagerInstance = new NetworkManager({
 
 ```typescript
 const networkManager = new NetworkManager(
-    'https://api.example.com', // Production base URL
-    'https://dev.example.com', // Development base URL
-    false, // Test mode: false (production), true (development)
-    {}, // Axios config options
-    networkErrorParams // Error parameters
+        'https://api.example.com', // Production base URL
+        'https://dev.example.com', // Development base URL
+        false, // Test mode: false (production), true (development)
+        {}, // Axios config options
+        networkErrorParams // Error parameters
 );
 ```
 
