@@ -1,6 +1,6 @@
 {
   "name": "next-netkit",
-  "version": "0.4.2",
+  "version": "0.5.2-dev",
   "description": "Network manager",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -13,8 +13,9 @@
     "lint": "eslint \"/**/*.ts\" --fix",
     "test": "rm -rf dist && npm install && npm run format && npm run lint && npm run build && jest",
     "distCheck": "[ -d dist ] || { echo 'dist folder does not exist'; exit 1; }",
-    "testPublish": "npm run distCheck && npm run test && npm publish",
-    "testPublish:dev": "npm run distCheck && npm run test && npm publish --tag dev"  },
+    "testPublish": "npm run test && npm run distCheck  && npm publish",
+    "testPublish:dev": "npm run test && npm run distCheck  && npm publish --tag dev"
+  },
   "keywords": [],
   "author": "Behzodjon Faiziev",
   "license": "MIT",
