@@ -3,7 +3,7 @@
 ## [0.7.0]
 
 - added `withCredentials` and `cancelToken` as optional parameters in constructor
-- exported 
+- exported
 
 ## [0.6.2]
 
