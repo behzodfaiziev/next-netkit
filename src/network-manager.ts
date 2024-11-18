@@ -5,6 +5,8 @@ import { INetworkManager } from "./network-manager.interface";
 import { NetworkErrorParams } from "./interfaces/network-error-params";
 import { ApiException } from "./error/api-exception";
 import { RequestMethod } from "./enums/request-method.enum";
+import { RequestQueue } from "@/services/request-queue.service";
+import { ErrorHandlingInterceptor } from "@/interceptors/error-handling.interceptor";
 
 interface NetworkManagerParams {
   baseUrl: string;
@@ -13,8 +15,8 @@ interface NetworkManagerParams {
   baseOptions: AxiosRequestConfig;
   errorParams: NetworkErrorParams;
   cancelToken?: CancelToken;
-  isClientSideWeb: boolean;
   withCredentials?: boolean;
+  refreshTokenPath: string;
 }
 
 @injectable()
@@ -30,82 +32,51 @@ class NetworkManager implements INetworkManager {
    * Error handling parameters for keys.
    */
   private readonly errorParams: NetworkErrorParams;
-  private accessToken: string | null = null;
-  private refreshToken: string | null = null;
-
-  /**
-   * Indicates if the code is running on the client side.
-   * @example
-   * typeof window !== 'undefined' && typeof localStorage !== 'undefined'
-   */
-  private readonly isClientSide: boolean;
 
   private axiosInstance: AxiosInstance;
+  private errorInterceptor: ErrorHandlingInterceptor;
 
   constructor({
     baseUrl,
     devBaseUrl,
     testMode,
+    refreshTokenPath,
     baseOptions,
     errorParams,
-    isClientSideWeb,
     withCredentials = true,
     cancelToken,
   }: NetworkManagerParams) {
+
+    this.errorInterceptor = new ErrorHandlingInterceptor(
+      refreshTokenPath,
+      new RequestQueue(),
+    );
+
+
     this.baseUrl = baseUrl;
     this.devBaseUrl = devBaseUrl;
     this.testMode = testMode;
     this.baseOptions = baseOptions;
     this.errorParams = errorParams;
-    this.isClientSide = isClientSideWeb;
     this.axiosInstance = axios.create({
       baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
       withCredentials: withCredentials,
       cancelToken: cancelToken,
-      // Additional config options
     });
-    this.setTokensFromLocalStorage();
+
+    this.setupInterceptors();
   }
 
-  clearTokens(): void {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    this.accessToken = null;
-    this.refreshToken = null;
-  }
-
-  setAccessToken(token: string): void {
-    this.accessToken = token;
-    if (this.isClientSide) {
-      localStorage.setItem("accessToken", token);
-    }
-  }
-
-  setRefreshToken(token: string): void {
-    this.refreshToken = token;
-    if (this.isClientSide) {
-      localStorage.setItem("refreshToken", token);
-    }
-  }
-
-  setTokensFromLocalStorage(): void {
-    if (this.isClientSide) {
-      const accessToken = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (accessToken) {
-        this.accessToken = accessToken;
-      }
-      if (refreshToken) {
-        this.refreshToken = refreshToken;
-      }
-    }
+  private setupInterceptors() {
+    this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      this.errorInterceptor.getInterceptor().onResponseError
+    );
   }
 
   private getHeaders(): Record<string, any> {
     return {
       ...(this.baseOptions.headers as Record<string, any>),
-      ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
-      ...(this.refreshToken ? { "Refresh-Token": this.refreshToken } : {}),
     };
   }
 
