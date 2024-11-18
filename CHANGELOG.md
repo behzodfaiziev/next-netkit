@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.0]
+
+> Note: This version has breaking changes.
+
+- `setAccessToken`, `setRefreshToken`, `clearTokens` methods are removed, since the tokens should be
+  managed by backend's http only cookies.
+- `accessToken` and `refreshToken` properties are removed, since the tokens should be managed by
+  backend's http only cookies.
+- `isClientSideWeb` method is removed, since it is not necessary anymore.
+- added `refreshTokenPath` for the path of the refresh token cookie
+
 ## [0.7.0]
 
 - added `withCredentials` and `cancelToken` as optional parameters in constructor
@@ -7,7 +18,7 @@
 
 ## [0.6.2]
 
-- updated github actions to use strict check on formatting
+- updated gitHub actions to use strict check on formatting
 - updated README.md
 
 ## [0.6.1]

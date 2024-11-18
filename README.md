@@ -8,7 +8,7 @@ development (TDD) by making network interactions mockable and testable.
 ## Table of Contents
 
 - [Features](#features)
-- [Change-log](#change-log)
+- [Changelog](#changelog)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Setting Up the NetworkManager](#setting-up-the-networkmanager)
@@ -33,7 +33,7 @@ development (TDD) by making network interactions mockable and testable.
 - **Error Handling**: Customizable error handling using the `ApiException` class.
 - **Token Management**: Handles access and refresh tokens, stored in `localStorage`.
 
-## Change-log
+## Changelog
 
 You can find the changelog [here](CHANGELOG.md).
 
