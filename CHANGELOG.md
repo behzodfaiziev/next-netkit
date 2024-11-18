@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.7.0]
+
+- added `withCredentials` and `cancelToken` as optional parameters in constructor
+- exported 
+
 ## [0.6.2]
 
 - updated github actions to use strict check on formatting

@@ -1,5 +1,4 @@
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import axios from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from "axios";
 import { injectable } from "inversify";
 
 import { INetworkManager } from "./network-manager.interface";
@@ -13,7 +12,9 @@ interface NetworkManagerParams {
   testMode: boolean;
   baseOptions: AxiosRequestConfig;
   errorParams: NetworkErrorParams;
+  cancelToken?: CancelToken;
   isClientSideWeb: boolean;
+  withCredentials?: boolean;
 }
 
 @injectable()
@@ -41,16 +42,26 @@ class NetworkManager implements INetworkManager {
 
   private axiosInstance: AxiosInstance;
 
-  constructor({ baseUrl, devBaseUrl, testMode, baseOptions, errorParams, isClientSideWeb }: NetworkManagerParams) {
+  constructor({
+    baseUrl,
+    devBaseUrl,
+    testMode,
+    baseOptions,
+    errorParams,
+    isClientSideWeb,
+    withCredentials = true,
+    cancelToken,
+  }: NetworkManagerParams) {
     this.baseUrl = baseUrl;
     this.devBaseUrl = devBaseUrl;
     this.testMode = testMode;
     this.baseOptions = baseOptions;
     this.errorParams = errorParams;
     this.isClientSide = isClientSideWeb;
-
     this.axiosInstance = axios.create({
       baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
+      withCredentials: withCredentials,
+      cancelToken: cancelToken,
       // Additional config options
     });
     this.setTokensFromLocalStorage();
