@@ -1,23 +1,31 @@
-import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
 import { RequestQueue } from "@/services/request-queue.service";
+
 export class ErrorHandlingInterceptor {
   private isRefreshing = false;
 
   constructor(
-    private refreshTokenPath: string,
-    private requestQueue: RequestQueue
+    private requestQueue: RequestQueue,
+    private baseUrl: string,
+    private refreshTokenPath?: string
   ) {}
 
   getInterceptor() {
     return {
       onResponseError: async (error: AxiosError): Promise<AxiosResponse | void> => {
-        if (error.response?.status === 401 && this.refreshTokenPath) {
-          if (error.config && error.config.url === this.refreshTokenPath) {
-            // Reject all queued requests
-            this.requestQueue.cancelAll("Token refresh failed");
-            throw error;
-          }
+        /// Throw error if there is no refresh token path
+        if (!this.refreshTokenPath) {
+          throw error;
+        }
 
+        /// Reject all queued requests if the error is a 401 sent from the refresh token path
+        if (error.response?.status === 401 && error.config?.url === this.refreshTokenPath) {
+          // Reject all queued requests
+          this.requestQueue.cancelAll("Token refresh failed");
+          throw error;
+        }
+        /// Handle 401 errors by refreshing the token
+        if (error.response?.status === 401) {
           if (this.isRefreshing && error.config) {
             // Queue request while token is being refreshed
             return this.requestQueue.enqueue(error.config);
@@ -27,7 +35,11 @@ export class ErrorHandlingInterceptor {
 
           try {
             // Send token refresh request
-            await axios.post(this.refreshTokenPath);
+            const result = await axios.post(`${this.baseUrl}/${this.refreshTokenPath}`);
+            if (result.status >= HttpStatusCode.MultipleChoices) {
+              throw new Error("Token refresh failed");
+            }
+
             this.isRefreshing = false;
             // Retry all queued requests after successful refresh
             await this.requestQueue.processQueue();
@@ -45,7 +57,6 @@ export class ErrorHandlingInterceptor {
             throw refreshError;
           }
         }
-
         // If it's not a 401 error or refresh token path, pass it along
         throw error;
       },

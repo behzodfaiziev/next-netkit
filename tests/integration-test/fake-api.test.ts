@@ -15,7 +15,7 @@ describe("NetworkManager Integration Test", () => {
   beforeAll(() => {
     networkManager = new NetworkManager({
       baseUrl: "https://fakestoreapi.com",
-      devBaseUrl: "https://dev.fakestoreapi.com",
+      devBaseUrl: "https://fakestoreapi.com",
       testMode: false,
       baseOptions: { headers: { "Content-Type": "application/json" } },
       errorParams,
