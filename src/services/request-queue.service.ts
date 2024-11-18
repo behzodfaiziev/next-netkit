@@ -1,8 +1,4 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  CancelTokenSource,
-} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from "axios";
 
 export class RequestQueue {
   private queue: Array<{
@@ -53,9 +49,7 @@ export class RequestQueue {
       const request = this.queue.shift();
       if (request) {
         request.cancelTokenSource.cancel(reason);
-        request.reject(
-          new axios.Cancel(`Request canceled: ${reason}`)
-        );
+        request.reject(new axios.Cancel(`Request canceled: ${reason}`));
       }
     }
   }
