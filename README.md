@@ -172,14 +172,11 @@ export class AuthRemoteDataSource implements IAuthRemoteDataSource {
   constructor(@inject("INetworkManager") private networkManager: INetworkManager) {}
 
   async signIn(dto: SignInDto): Promise<SignInResponseDto> {
-    const result = await this.networkManager.request<SignInResponseDto>({
+   return await this.networkManager.request<SignInResponseDto>({
       method: RequestMethod.POST,
       url: `/api/auth/sign-in`,
       data: dto,
     });
-
-    this.networkManager.setAccessToken(result.accesToken);
-    return result;
   }
 }
 ```
