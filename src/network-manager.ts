@@ -16,14 +16,11 @@ interface NetworkManagerParams {
   errorParams: NetworkErrorParams;
   cancelToken?: CancelToken;
   withCredentials?: boolean;
-  refreshTokenPath: string;
+  refreshTokenPath?: string;
 }
 
 @injectable()
 class NetworkManager implements INetworkManager {
-  private readonly baseUrl: string;
-  private readonly devBaseUrl: string;
-  private readonly testMode: boolean;
   /**
    * Base options for Axios requests.
    */
@@ -46,15 +43,13 @@ class NetworkManager implements INetworkManager {
     withCredentials = true,
     cancelToken,
   }: NetworkManagerParams) {
-    this.errorInterceptor = new ErrorHandlingInterceptor(refreshTokenPath, new RequestQueue());
+    const url = testMode ? devBaseUrl : baseUrl;
+    this.errorInterceptor = new ErrorHandlingInterceptor(new RequestQueue(), url, refreshTokenPath);
 
-    this.baseUrl = baseUrl;
-    this.devBaseUrl = devBaseUrl;
-    this.testMode = testMode;
     this.baseOptions = baseOptions;
     this.errorParams = errorParams;
     this.axiosInstance = axios.create({
-      baseURL: this.testMode ? this.devBaseUrl : this.baseUrl,
+      baseURL: url,
       withCredentials: withCredentials,
       cancelToken: cancelToken,
     });
