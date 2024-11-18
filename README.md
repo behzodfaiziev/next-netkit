@@ -35,6 +35,7 @@ development (TDD) by making network interactions mockable and testable.
 - **Error Handling**: Customizable error handling using the `ApiException` class.
 - **Clean Architecture**: Easily integrate with Clean Architecture principles.
 - **Refresh Token Support**: Automatically refreshes the access token when it expires.
+
 ## Changelog
 
 You can find the changelog [here](CHANGELOG.md).
@@ -78,6 +79,7 @@ const networkManagerInstance = new NetworkManager({
   errorParams: networkErrorParams, // Error parameters
 });
 ```
+
 ## Making Requests:
 
 ### Request:
@@ -140,7 +142,7 @@ the manager will automatically request a new one and retry the failed request wi
 ```typescript
 const networkManagerInstance = new NetworkManager({
   // Other options (e.g., baseUrl, etc.)
-  refreshTokenPath: 'api/auth/refresh-token',  // Path to the backend refresh token API
+  refreshTokenPath: "api/auth/refresh-token", // Path to the backend refresh token API
 });
 ```
 
