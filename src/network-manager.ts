@@ -5,8 +5,8 @@ import { INetworkManager } from "./network-manager.interface";
 import { NetworkErrorParams } from "./interfaces/network-error-params";
 import { ApiException } from "./error/api-exception";
 import { RequestMethod } from "./enums/request-method.enum";
-import { RequestQueue } from "@/services/request-queue.service";
-import { ErrorHandlingInterceptor } from "@/interceptors/error-handling.interceptor";
+import { RequestQueue } from "./services/request-queue.service";
+import { ErrorHandlingInterceptor } from "./interceptors/error-handling.interceptor";
 
 interface NetworkManagerParams {
   baseUrl: string;
@@ -46,12 +46,7 @@ class NetworkManager implements INetworkManager {
     withCredentials = true,
     cancelToken,
   }: NetworkManagerParams) {
-
-    this.errorInterceptor = new ErrorHandlingInterceptor(
-      refreshTokenPath,
-      new RequestQueue(),
-    );
-
+    this.errorInterceptor = new ErrorHandlingInterceptor(refreshTokenPath, new RequestQueue());
 
     this.baseUrl = baseUrl;
     this.devBaseUrl = devBaseUrl;
