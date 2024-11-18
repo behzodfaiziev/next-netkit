@@ -9,19 +9,6 @@ import { RequestMethod } from "../src/enums/request-method.enum";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: { [key: string]: string } = {};
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => (store[key] = value),
-    removeItem: (key: string) => delete store[key],
-    clear: () => (store = {}),
-  };
-})();
-
-Object.defineProperty(global, "localStorage", { value: localStorageMock });
-
 describe("NetworkManager", () => {
   let networkManager: NetworkManager;
   const baseUrl = "https://api.example.com";
@@ -29,12 +16,8 @@ describe("NetworkManager", () => {
   const testMode = false;
   const baseOptions = { headers: { "Content-Type": "application/json" } };
   const errorParams: NetworkErrorParams = new NetworkErrorParams({});
-  const isClientSideWeb = true;
 
   beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
-
     // Mock axios.create to return an instance with interceptors
     mockedAxios.create.mockReturnValue({
       ...mockedAxios,
@@ -46,32 +29,9 @@ describe("NetworkManager", () => {
       testMode,
       baseOptions,
       errorParams,
-      isClientSideWeb,
-    });
-  });
-
-  it("should set access token and store it in localStorage", () => {
-    const token = "access-token";
-    networkManager.setAccessToken(token);
-    expect(localStorage.getItem("accessToken")).toBe(token);
-  });
-
-  it("should set refresh token and store it in localStorage", () => {
-    const token = "refresh-token";
-    networkManager.setRefreshToken(token);
-    expect(localStorage.getItem("refreshToken")).toBe(token);
-  });
-
-  it("should get headers with tokens", () => {
-    const accessToken = "access-token";
-    const refreshToken = "refresh-token";
-    networkManager.setAccessToken(accessToken);
-    networkManager.setRefreshToken(refreshToken);
-    const headers = networkManager["getHeaders"]();
-    expect(headers).toEqual({
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "Refresh-Token": refreshToken,
+      withCredentials: true,
+      cancelToken: undefined,
+      refreshTokenPath: "/refresh",
     });
   });
 

@@ -19,7 +19,7 @@ describe("NetworkManager Integration Test", () => {
       testMode: false,
       baseOptions: { headers: { "Content-Type": "application/json" } },
       errorParams,
-      isClientSideWeb: false,
+      refreshTokenPath: "/refresh",
     });
   });
 
