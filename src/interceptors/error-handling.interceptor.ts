@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse, HttpStatusCode } from "axios";
-import { RequestQueue } from "@/services/request-queue.service";
+import { RequestQueue } from "../services/request-queue.service";
 
 export class ErrorHandlingInterceptor {
   private isRefreshing = false;
