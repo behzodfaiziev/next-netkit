@@ -35,7 +35,7 @@ export class ErrorHandlingInterceptor {
 
           try {
             // Send token refresh request
-            const result = await axios.post(`${this.baseUrl}/${this.refreshTokenPath}`);
+            const result = await axios.post(`${this.baseUrl}/${this.refreshTokenPath}`, {}, { withCredentials: true });
             if (result.status >= HttpStatusCode.MultipleChoices) {
               throw new Error("Token refresh failed");
             }
