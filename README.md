@@ -262,26 +262,15 @@ Create a module for the network manager using `Inversify`.
 import { ContainerModule, interfaces } from "inversify";
 import { INetworkManager, NetworkManager, NetworkErrorParams } from "next-netkit";
 
-// Define error-handling parameters
-const networkErrorParams: NetworkErrorParams = {
-  messageKey: "message",
-  statusCodeKey: "status",
-  couldNotParseError: "Could not parse error",
-  jsonIsEmptyError: "JSON is empty",
-  noInternetError: "No internet connection",
-  jsonNullError: "JSON is null",
-  jsonUnsupportedObjectError: "JSON is unsupported object",
-  notMapTypeError: "Not map type",
-};
-
-// Create NetworkManager instance
-const networkManagerInstance = new NetworkManager(
-  "https://api.example.com",
-  "https://dev.example.com",
-  false,
-  {},
-  networkErrorParams
-);
+const networkManagerInstance = new NetworkManager({
+  baseUrl: "https://api.example.com", // Production base URL
+  devBaseUrl: "https://dev.example.com", // Development base URL
+  testMode: isTestMode, // Test mode: false (production), true (development)
+  baseOptions: {}, // Axios config options
+  errorParams: networkErrorParams, // Error parameters
+  withCredentials: true,
+  refreshTokenPath: "api/auth/refresh-token",
+});
 
 // Create a network container module
 const networkContainer = new ContainerModule((bind: interfaces.Bind) => {
