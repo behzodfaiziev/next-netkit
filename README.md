@@ -21,7 +21,8 @@ development (TDD) by making network interactions mockable and testable.
     - [How It Works](#how-it-works)
   - [Making Requests according to the Clean Architecture](#making-requests-according-to-the-clean-architecture)
 
-[//]: # (  - [Error Handling with ApiException]&#40;#error-handling-with-apiexception-according-to-the-clean-architecture&#41;)
+[//]: # "  - [Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
+
 - [Integration with Inversify for Dependency Injection](#integration-with-inversify-for-dependency-injection)
   - [Container Module Setup](#container-module-setup)
   - [Merging Containers](#merging-containers)
@@ -175,7 +176,7 @@ export class AuthRemoteDataSource implements IAuthRemoteDataSource {
   constructor(@inject("INetworkManager") private networkManager: INetworkManager) {}
 
   async signIn(dto: SignInDto): Promise<SignInResponseDto> {
-   return await this.networkManager.request<SignInResponseDto>({
+    return await this.networkManager.request<SignInResponseDto>({
       method: RequestMethod.POST,
       url: `/api/auth/sign-in`,
       data: dto,
@@ -207,75 +208,44 @@ export class AuthRepository implements IAuthRepository {
 }
 ```
 
-[//]: # ()
-[//]: # (## Error Handling with ApiException according to the Clean Architecture)
-
-[//]: # ()
-[//]: # (All errors returned by the network manager will be transformed into `ApiException` instances,)
-
-[//]: # (providing consistent error-handling across your app. Which are caught with a try-catch block.)
-
-[//]: # ()
-[//]: # (```typescript)
-
-[//]: # (/// AuthController.ts)
-
-[//]: # (@injectable&#40;&#41;)
-
-[//]: # (export class AuthController {)
-
-[//]: # (  constructor&#40;@inject&#40;SignIn&#41; private signInUseCase: SignIn&#41; {})
-
-[//]: # ()
-[//]: # (  async handleSignIn&#40;dto: SignInDto&#41;: Promise<void> {)
-
-[//]: # (    try {)
-
-[//]: # (      return await this.signInUseCase.execute&#40;dto&#41;;)
-
-[//]: # (    } catch &#40;error&#41; {)
-
-[//]: # (      throw error;)
-
-[//]: # (    })
-
-[//]: # (  })
-
-[//]: # (})
-
-[//]: # ()
-[//]: # (/// sign-in.tsx)
-
-[//]: # (/// ... other codes)
-
-[//]: # (const signInController = container.get<AuthController>&#40;AuthController&#41;;)
-
-[//]: # ()
-[//]: # (const handleSignIn = async &#40;&#41; => {)
-
-[//]: # (  try {)
-
-[//]: # (    const dto: SignInDto = { email, password };)
-
-[//]: # (    setLoading&#40;true&#41;;)
-
-[//]: # (    await signInController.handleSignIn&#40;dto&#41;;)
-
-[//]: # (    router.push&#40;"/"&#41;;)
-
-[//]: # (  } catch &#40;err&#41; {)
-
-[//]: # (    setLoading&#40;false&#41;;)
-
-[//]: # (    setError&#40;&#40;err as ApiException&#41;.message&#41;;)
-
-[//]: # (  })
-
-[//]: # (};)
-
-[//]: # (/// ... other codes)
-
-[//]: # (```)
+[//]: #
+[//]: # "## Error Handling with ApiException according to the Clean Architecture"
+[//]: #
+[//]: # "All errors returned by the network manager will be transformed into `ApiException` instances,"
+[//]: # "providing consistent error-handling across your app. Which are caught with a try-catch block."
+[//]: #
+[//]: # "```typescript"
+[//]: # "/// AuthController.ts"
+[//]: # "@injectable()"
+[//]: # "export class AuthController {"
+[//]: # "  constructor(@inject(SignIn) private signInUseCase: SignIn) {}"
+[//]: #
+[//]: # "  async handleSignIn(dto: SignInDto): Promise<void> {"
+[//]: # "    try {"
+[//]: # "      return await this.signInUseCase.execute(dto);"
+[//]: # "    } catch (error) {"
+[//]: # "      throw error;"
+[//]: # "    }"
+[//]: # "  }"
+[//]: # "}"
+[//]: #
+[//]: # "/// sign-in.tsx"
+[//]: # "/// ... other codes"
+[//]: # "const signInController = container.get<AuthController>(AuthController);"
+[//]: #
+[//]: # "const handleSignIn = async () => {"
+[//]: # "  try {"
+[//]: # "    const dto: SignInDto = { email, password };"
+[//]: # "    setLoading(true);"
+[//]: # "    await signInController.handleSignIn(dto);"
+[//]: # '    router.push("/");'
+[//]: # "  } catch (err) {"
+[//]: # "    setLoading(false);"
+[//]: # "    setError((err as ApiException).message);"
+[//]: # "  }"
+[//]: # "};"
+[//]: # "/// ... other codes"
+[//]: # "```"
 
 ## Integration with Inversify for Dependency Injection
 
