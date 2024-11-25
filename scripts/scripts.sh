@@ -2,7 +2,7 @@
 npm run format && npm run lint && npx prettier --check --write .
 
 # Publish to npm with test
-npm run publishTest
+npm run testPublish
 
 # Publish dev version to npm
-npm run publish:dev
+npm run testPublish:dev

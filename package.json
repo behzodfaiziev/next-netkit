@@ -1,6 +1,6 @@
 {
   "name": "next-netkit",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Network manager",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -11,7 +11,7 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "lint": "eslint \"/**/*.ts\" --fix",
-    "test": "rm -rf dist && npm install && npm run format && npm run lint && npm run build && jest",
+    "test": "rm -rf dist && npm install && npm run format && npm run lint && npx prettier --check --write . &&  npm run build && jest",
     "distCheck": "[ -d dist ] || { echo 'dist folder does not exist'; exit 1; }",
     "testPublish": "npm run test && npm run distCheck  && npm publish",
     "testPublish:dev": "npm run test && npm run distCheck  && npm publish --tag dev"

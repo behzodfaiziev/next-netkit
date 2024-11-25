@@ -8,17 +8,21 @@ development (TDD) by making network interactions mockable and testable.
 ## Table of Contents
 
 - [Features](#features)
-- [Change-log](#change-log)
+- [Changelog](#changelog)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Setting Up the NetworkManager](#setting-up-the-networkmanager)
-  - [Token Management](#token-management)
   - [Making Requests](#making-requests)
     - [Request](#request)
     - [RequestList](#requestlist)
     - [RequestVoid](#requestvoid)
+  - [Refresh Token](#refresh-token)
+    - [How to Configure Token Refresh](#how-to-configure-token-refresh)
+    - [How It Works](#how-it-works)
   - [Making Requests according to the Clean Architecture](#making-requests-according-to-the-clean-architecture)
-  - [Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)
+
+[//]: # "  - [Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
+
 - [Integration with Inversify for Dependency Injection](#integration-with-inversify-for-dependency-injection)
   - [Container Module Setup](#container-module-setup)
   - [Merging Containers](#merging-containers)
@@ -31,9 +35,10 @@ development (TDD) by making network interactions mockable and testable.
 - **Axios Integration**: Built on top of Axios for flexible HTTP requests.
 - **Dependency Injection**: Supports `Inversify` for clean and testable architecture.
 - **Error Handling**: Customizable error handling using the `ApiException` class.
-- **Token Management**: Handles access and refresh tokens, stored in `localStorage`.
+- **Clean Architecture**: Easily integrate with Clean Architecture principles.
+- **Refresh Token Support**: Automatically refreshes the access token when it expires.
 
-## Change-log
+## Changelog
 
 You can find the changelog [here](CHANGELOG.md).
 
@@ -74,21 +79,9 @@ const networkManagerInstance = new NetworkManager({
   testMode: isTestMode, // Test mode: false (production), true (development)
   baseOptions: {}, // Axios config options
   errorParams: networkErrorParams, // Error parameters
-  isClientSideWeb: typeof window !== "undefined" && typeof localStorage !== "undefined",
+  withCredentials: true,
+  refreshTokenPath: "api/auth/refresh-token",
 });
-```
-
-### Token Management
-
-You can manage access tokens and refresh tokens using `setAccessToken` and `setRefreshToken`.
-These tokens are automatically stored in `localStorage`and are automatically used in headers for
-future requests.
-
-```typescript
-// Set access token
-networkManager.setAccessToken("your-access-token");
-// Set refresh token
-networkManager.setRefreshToken("your-refresh-token");
 ```
 
 ## Making Requests:
@@ -142,6 +135,30 @@ await networkManager.requestVoid({
 });
 ```
 
+## Refresh Token
+
+The NetworkManager automatically handles token refresh when an access token expires. You only need
+to provide the API endpoint where the refresh token request is made. Once the access token expires,
+the manager will automatically request a new one and retry the failed request with the new token.
+
+### How to Configure Token Refresh
+
+```typescript
+const networkManagerInstance = new NetworkManager({
+  // Other options (e.g., baseUrl, etc.)
+  refreshTokenPath: "api/auth/refresh-token", // Path to the backend refresh token API
+});
+```
+
+### How It Works
+
+- **Token Expiry Detection**: When a request returns a 401 Unauthorized error due to an expired
+  token, NetworkManager detects this and triggers the refresh process.
+- **Token Refresh Request**: It sends a request to the provided refreshTokenPath to obtain a new
+  access token.
+- **Retrying Failed Requests**: Once the token is refreshed, it automatically retries the original
+  failed request with the new token.
+
 ## Making Requests according to the Clean Architecture
 
 Using the Clean Architecture, you can create a `RemoteDataSource` class that implements an
@@ -159,14 +176,11 @@ export class AuthRemoteDataSource implements IAuthRemoteDataSource {
   constructor(@inject("INetworkManager") private networkManager: INetworkManager) {}
 
   async signIn(dto: SignInDto): Promise<SignInResponseDto> {
-    const result = await this.networkManager.request<SignInResponseDto>({
+    return await this.networkManager.request<SignInResponseDto>({
       method: RequestMethod.POST,
       url: `/api/auth/sign-in`,
       data: dto,
     });
-
-    this.networkManager.setAccessToken(result.accesToken);
-    return result;
   }
 }
 ```
@@ -194,43 +208,44 @@ export class AuthRepository implements IAuthRepository {
 }
 ```
 
-## Error Handling with ApiException according to the Clean Architecture
-
-All errors returned by the network manager will be transformed into `ApiException` instances,
-providing consistent error-handling across your app. Which are caught with a try-catch block.
-
-```typescript
-/// AuthController.ts
-@injectable()
-export class AuthController {
-  constructor(@inject(SignIn) private signInUseCase: SignIn) {}
-
-  async handleSignIn(dto: SignInDto): Promise<void> {
-    try {
-      return await this.signInUseCase.execute(dto);
-    } catch (error) {
-      throw error;
-    }
-  }
-}
-
-/// sign-in.tsx
-/// ... other codes
-const signInController = container.get<AuthController>(AuthController);
-
-const handleSignIn = async () => {
-  try {
-    const dto: SignInDto = { email, password };
-    setLoading(true);
-    await signInController.handleSignIn(dto);
-    router.push("/");
-  } catch (err) {
-    setLoading(false);
-    setError((err as ApiException).message);
-  }
-};
-/// ... other codes
-```
+[//]: #
+[//]: # "## Error Handling with ApiException according to the Clean Architecture"
+[//]: #
+[//]: # "All errors returned by the network manager will be transformed into `ApiException` instances,"
+[//]: # "providing consistent error-handling across your app. Which are caught with a try-catch block."
+[//]: #
+[//]: # "```typescript"
+[//]: # "/// AuthController.ts"
+[//]: # "@injectable()"
+[//]: # "export class AuthController {"
+[//]: # "  constructor(@inject(SignIn) private signInUseCase: SignIn) {}"
+[//]: #
+[//]: # "  async handleSignIn(dto: SignInDto): Promise<void> {"
+[//]: # "    try {"
+[//]: # "      return await this.signInUseCase.execute(dto);"
+[//]: # "    } catch (error) {"
+[//]: # "      throw error;"
+[//]: # "    }"
+[//]: # "  }"
+[//]: # "}"
+[//]: #
+[//]: # "/// sign-in.tsx"
+[//]: # "/// ... other codes"
+[//]: # "const signInController = container.get<AuthController>(AuthController);"
+[//]: #
+[//]: # "const handleSignIn = async () => {"
+[//]: # "  try {"
+[//]: # "    const dto: SignInDto = { email, password };"
+[//]: # "    setLoading(true);"
+[//]: # "    await signInController.handleSignIn(dto);"
+[//]: # '    router.push("/");'
+[//]: # "  } catch (err) {"
+[//]: # "    setLoading(false);"
+[//]: # "    setError((err as ApiException).message);"
+[//]: # "  }"
+[//]: # "};"
+[//]: # "/// ... other codes"
+[//]: # "```"
 
 ## Integration with Inversify for Dependency Injection
 

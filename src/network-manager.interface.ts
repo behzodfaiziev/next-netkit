@@ -37,10 +37,4 @@ export interface INetworkManager {
     method: RequestMethod;
     data?: any;
   }): Promise<void>;
-
-  setAccessToken(token: string): void;
-
-  setRefreshToken(token: string): void;
-
-  clearTokens(): void;
 }
