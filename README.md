@@ -159,6 +159,30 @@ const networkManagerInstance = new NetworkManager({
 - **Retrying Failed Requests**: Once the token is refreshed, it automatically retries the original
   failed request with the new token.
 
+## Ensuring Access Token is Refreshed Before Making a Request
+
+In some scenarios, you may want to ensure that an **access token is refreshed before making a
+request**, particularly for actions that cannot be repeated easily without potential issues.
+
+- For instance, when uploading a 100 MB video to a social media platform, you want to avoid
+  uploading the video twice in case the access token is expired. To handle such situations
+  gracefully, the request should explicitly ensure the access token is valid by triggering a token
+  refresh before making the main request.
+
+This feature requires that the `refreshTokenPath` is correctly configured in the `NetworkManager`
+settings. Without it, token refresh functionality will not work.
+
+Here’s an example of how to make such a request in TypeScript:
+
+```typescript
+const product = await networkManager.request<ProductModel>({
+  method: RequestMethod.GET,
+  url: "/api/product/1",
+  isTokenRefreshRequired: true, // Ensure token refresh is triggered before the request
+});
+
+```
+
 ## Making Requests according to the Clean Architecture
 
 Using the Clean Architecture, you can create a `RemoteDataSource` class that implements an
