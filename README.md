@@ -19,14 +19,16 @@ development (TDD) by making network interactions mockable and testable.
   - [Refresh Token](#refresh-token)
     - [How to Configure Token Refresh](#how-to-configure-token-refresh)
     - [How It Works](#how-it-works)
+  - [Ensuring Access Token is Refreshed Before Making a Request](#ensuring-access-token-is-refreshed-before-making-a-request)
   - [Making Requests according to the Clean Architecture](#making-requests-according-to-the-clean-architecture)
-
-[//]: # "  - [Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
-
 - [Integration with Inversify for Dependency Injection](#integration-with-inversify-for-dependency-injection)
   - [Container Module Setup](#container-module-setup)
   - [Merging Containers](#merging-containers)
 - [License](#license)
+
+  [//]: #
+
+"[Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
 
 ## Features
 
@@ -182,6 +184,27 @@ const product = await networkManager.request<ProductModel>({
 });
 
 ```
+
+### Key Points:
+
+#### 1. When to Use:
+
+- Use **isTokenRefreshRequired: true** for requests that must be sent successfully and are critical
+  in
+  nature (e.g., uploading large files, important transactions).
+- This ensures the access token is refreshed if it has expired, preventing failure due to
+  unauthorized errors.
+
+#### 2. How It Works:
+
+- If **isTokenRefreshRequired** is set to **true**, the **NetworkManager** will first send a request
+  to refresh the access token (using the configured **refreshTokenPath**).
+- After refreshing the token, the main request will be executed.
+
+#### 3. Fallback Handling:
+
+- If the token refresh fails (e.g., due to an expired refresh token), the main request **will not
+  proceed**, and an error will be thrown to prevent **redundant** or **unauthorized** actions.
 
 ## Making Requests according to the Clean Architecture
 
