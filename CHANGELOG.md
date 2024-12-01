@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.8.2-dev]
+## [0.8.3-dev]
 
 - added `isTokenRefreshRequired` method to check if the token refresh is required before sending a
   request

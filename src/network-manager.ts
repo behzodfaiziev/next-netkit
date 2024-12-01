@@ -195,11 +195,7 @@ class NetworkManager implements INetworkManager {
     // Trigger token refresh if the path is set
     if (this.refreshTokenPath) {
       try {
-        await this.axiosInstance.post(
-          `${this.baseOptions.baseURL}/${this.refreshTokenPath}`,
-          {},
-          { withCredentials: true }
-        );
+        await this.axiosInstance.post(this.refreshTokenPath, {}, { withCredentials: true });
       } catch (error: any) {
         throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
       }
