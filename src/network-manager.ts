@@ -32,6 +32,7 @@ class NetworkManager implements INetworkManager {
 
   private axiosInstance: AxiosInstance;
   private errorInterceptor: ErrorHandlingInterceptor;
+  private readonly refreshTokenPath?: string;
 
   constructor({
     baseUrl,
@@ -48,6 +49,7 @@ class NetworkManager implements INetworkManager {
 
     this.baseOptions = baseOptions;
     this.errorParams = errorParams;
+    this.refreshTokenPath = refreshTokenPath;
     this.axiosInstance = axios.create({
       baseURL: url,
       withCredentials: withCredentials,
@@ -75,20 +77,23 @@ class NetworkManager implements INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired = false,
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean; // Flag to indicate whether to refresh token before request
   }): Promise<T> {
-    config = config || {};
-    config.url = url;
-    config.data = data;
-    config.method = RequestMethod.toString(method);
-    config.headers = this.getHeaders();
+    const configuration: AxiosRequestConfig<any> = this.setConfigs(config, url, method, data);
+
+    // If token refresh is required, handle it first
+    if (isTokenRefreshRequired) {
+      await this.refreshTokenIfNeeded();
+    }
 
     try {
-      const response: AxiosResponse<T> = await this.axiosInstance.request(config);
+      const response: AxiosResponse<T> = await this.axiosInstance.request(configuration);
       if (Array.isArray(response.data)) {
         throw new ApiException(400, "Response is not an object");
       }
@@ -109,20 +114,23 @@ class NetworkManager implements INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired = false,
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean; // Flag to indicate whether to refresh token before request
   }): Promise<T[]> {
-    config = config || {};
-    config.url = url;
-    config.data = data;
-    config.method = RequestMethod.toString(method);
-    config.headers = this.getHeaders();
+    const configuration: AxiosRequestConfig<any> = this.setConfigs(config, url, method, data);
+
+    // If token refresh is required, handle it first
+    if (isTokenRefreshRequired) {
+      await this.refreshTokenIfNeeded();
+    }
 
     try {
-      const response: AxiosResponse<T[]> = await this.axiosInstance.request(config);
+      const response: AxiosResponse<T[]> = await this.axiosInstance.request(configuration);
       if (Array.isArray(response.data)) {
         return response.data;
       } else {
@@ -144,25 +152,57 @@ class NetworkManager implements INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired = false, // Default to false
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean; // Flag to indicate whether to refresh token before request
   }): Promise<void> {
-    config = config || {};
-    config.url = url;
-    config.data = data;
-    config.method = RequestMethod.toString(method);
-    config.headers = this.getHeaders();
+    const configuration: AxiosRequestConfig<any> = this.setConfigs(config, url, method, data);
+
+    // If token refresh is required, handle it first
+    if (isTokenRefreshRequired) {
+      await this.refreshTokenIfNeeded();
+    }
 
     try {
-      await this.axiosInstance.request(config);
+      await this.axiosInstance.request(configuration);
     } catch (error: any) {
       if (error.response) {
         throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
       }
       throw error;
+    }
+  }
+
+  private setConfigs(
+    config: AxiosRequestConfig<any> | undefined,
+    url: string,
+    method: RequestMethod,
+    data: any
+  ): AxiosRequestConfig<any> {
+    config = config || {};
+    config.url = url;
+    config.data = data;
+    config.method = RequestMethod.toString(method);
+    config.headers = this.getHeaders();
+    return config;
+  }
+
+  private async refreshTokenIfNeeded() {
+    // Trigger token refresh if the path is set
+    if (this.refreshTokenPath) {
+      try {
+        await this.axiosInstance.post(
+          `${this.baseOptions.baseURL}/${this.refreshTokenPath}`,
+          {},
+          { withCredentials: true }
+        );
+      } catch (error: any) {
+        throw ApiException.fromJson(error.response.data, this.errorParams, error.response.status);
+      }
     }
   }
 }
