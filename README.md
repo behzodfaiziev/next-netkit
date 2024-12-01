@@ -184,7 +184,6 @@ const product = await networkManager.request<ProductModel>({
   url: "/api/product/1",
   isTokenRefreshRequired: true, // Ensure token refresh is triggered before the request
 });
-
 ```
 
 ### Key Points:

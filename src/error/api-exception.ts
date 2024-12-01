@@ -55,9 +55,9 @@ export class ApiException extends Error {
 
       // If we can't parse the response, return a generic parsing error
       return new ApiException(statusCode ?? 417, params.couldNotParseError);
-    } catch (e) {
+    } catch (e: any) {
       // Return a default parsing error if an exception occurs
-      return new ApiException(statusCode ?? 400, params.couldNotParseError);
+      return new ApiException(statusCode ?? 400, `params.couldNotParseError: ${e}`);
     }
   }
 }

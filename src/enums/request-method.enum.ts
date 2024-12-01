@@ -6,10 +6,8 @@ enum RequestMethod {
   PATCH = "PATCH",
 }
 
-namespace RequestMethod {
-  export function toString(type: RequestMethod): string {
-    return type.toString();
-  }
+function requestMethodToString(type: RequestMethod): string {
+  return type.toString();
 }
 
-export { RequestMethod };
+export { RequestMethod, requestMethodToString };

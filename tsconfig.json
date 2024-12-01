@@ -3,7 +3,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
-    "target": "es6",
+    "target": "ES2022",
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -25,6 +25,6 @@
       }
     ]
   },
-  "include": ["src", "index.ts", "tests"],
+  "include": ["src/**/*.ts", "index.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
 }

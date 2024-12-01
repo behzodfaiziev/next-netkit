@@ -4,7 +4,7 @@ import { injectable } from "inversify";
 import { INetworkManager } from "./network-manager.interface";
 import { NetworkErrorParams } from "./interfaces/network-error-params";
 import { ApiException } from "./error/api-exception";
-import { RequestMethod } from "./enums/request-method.enum";
+import { RequestMethod, requestMethodToString } from "./enums/request-method.enum";
 import { RequestQueue } from "./services/request-queue.service";
 import { ErrorHandlingInterceptor } from "./interceptors/error-handling.interceptor";
 
@@ -186,7 +186,7 @@ class NetworkManager implements INetworkManager {
     config = config || {};
     config.url = url;
     config.data = data;
-    config.method = RequestMethod.toString(method);
+    config.method = requestMethodToString(method);
     config.headers = this.getHeaders();
     return config;
   }
