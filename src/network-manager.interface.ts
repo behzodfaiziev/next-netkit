@@ -7,11 +7,13 @@ export interface INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired,
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean;
   }): Promise<T>;
 
   requestList<T>({
@@ -19,11 +21,13 @@ export interface INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired,
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean;
   }): Promise<T[]>;
 
   requestVoid({
@@ -31,10 +35,12 @@ export interface INetworkManager {
     config,
     method,
     data,
+    isTokenRefreshRequired,
   }: {
     url: string;
     config?: AxiosRequestConfig;
     method: RequestMethod;
     data?: any;
+    isTokenRefreshRequired?: boolean;
   }): Promise<void>;
 }
