@@ -20,15 +20,17 @@ development (TDD) by making network interactions mockable and testable.
     - [How to Configure Token Refresh](#how-to-configure-token-refresh)
     - [How It Works](#how-it-works)
   - [Ensuring Access Token is Refreshed Before Making a Request](#ensuring-access-token-is-refreshed-before-making-a-request)
+    - [Key Points](#key-points)
+      - [1. When to Use](#1-when-to-use)
+      - [2. How It Works](#2-how-it-works)
+      - [3. Fallback Handling](#3-fallback-handling)
   - [Making Requests according to the Clean Architecture](#making-requests-according-to-the-clean-architecture)
 - [Integration with Inversify for Dependency Injection](#integration-with-inversify-for-dependency-injection)
   - [Container Module Setup](#container-module-setup)
   - [Merging Containers](#merging-containers)
 - [License](#license)
 
-  [//]: #
-
-"[Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
+  [//]: # "[Error Handling with ApiException](#error-handling-with-apiexception-according-to-the-clean-architecture)"
 
 ## Features
 
