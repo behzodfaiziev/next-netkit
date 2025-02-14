@@ -259,4 +259,64 @@ describe("NetworkManager", () => {
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
     expect(mockedAxios.request).toHaveBeenCalledTimes(0); // Main request not retried
   });
+
+  test("should set a custom header for a request", async () => {
+    const responseData = { name: "mocked named", surname: "mockedSurname" };
+    mockedAxios.request.mockResolvedValueOnce({ data: responseData });
+
+    const config = {
+      url: "/endpoint",
+      method: RequestMethod.GET,
+      config: { headers: { "Custom-Header": "1234" } },
+    };
+    const data = await networkManager.request(config);
+
+    expect(data).toEqual(responseData);
+    expect(mockedAxios.request).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.request).toHaveBeenCalledWith({
+      url: config.url,
+      method: config.method,
+      headers: { "Content-Type": "application/json", "Custom-Header": "1234" },
+      data: undefined,
+    });
+  });
+
+  test("should set a custom header for a requestList", async () => {
+    const responseData = [{ name: "Item 1" }, { name: "Item 2" }];
+    mockedAxios.request.mockResolvedValueOnce({ data: responseData });
+
+    const config = {
+      url: "/endpoint",
+      method: RequestMethod.GET,
+      config: { headers: { "Custom-Header": "1234" } },
+    };
+    const data = await networkManager.requestList(config);
+
+    expect(data).toEqual(responseData);
+    expect(mockedAxios.request).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.request).toHaveBeenCalledWith({
+      url: config.url,
+      method: config.method,
+      headers: { "Content-Type": "application/json", "Custom-Header": "1234" },
+      data: undefined,
+    });
+  });
+  test("should set a custom header for a requestVoid", async () => {
+    mockedAxios.request.mockResolvedValueOnce({});
+
+    const config = {
+      url: "/endpoint",
+      method: RequestMethod.POST,
+      config: { headers: { "Custom-Header": "1234" } },
+    };
+    await expect(networkManager.requestVoid(config)).resolves.not.toThrow();
+
+    expect(mockedAxios.request).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.request).toHaveBeenCalledWith({
+      url: config.url,
+      method: config.method,
+      headers: { "Content-Type": "application/json", "Custom-Header": "1234" },
+      data: undefined,
+    });
+  });
 });

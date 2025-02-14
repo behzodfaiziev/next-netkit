@@ -59,19 +59,6 @@ class NetworkManager implements INetworkManager {
     this.setupInterceptors();
   }
 
-  private setupInterceptors() {
-    this.axiosInstance.interceptors.response.use(
-      (response) => response,
-      this.errorInterceptor.getInterceptor().onResponseError
-    );
-  }
-
-  private getHeaders(): Record<string, any> {
-    return {
-      ...(this.baseOptions.headers as Record<string, any>),
-    };
-  }
-
   async request<T>({
     url,
     config,
@@ -177,6 +164,19 @@ class NetworkManager implements INetworkManager {
     }
   }
 
+  private setupInterceptors() {
+    this.axiosInstance.interceptors.response.use(
+      (response) => response,
+      this.errorInterceptor.getInterceptor().onResponseError
+    );
+  }
+
+  private getHeaders(): Record<string, any> {
+    return {
+      ...(this.baseOptions.headers as Record<string, any>),
+    };
+  }
+
   private setConfigs(
     config: AxiosRequestConfig<any> | undefined,
     url: string,
@@ -187,7 +187,7 @@ class NetworkManager implements INetworkManager {
     config.url = url;
     config.data = data;
     config.method = requestMethodToString(method);
-    config.headers = this.getHeaders();
+    config.headers = { ...this.getHeaders(), ...(config.headers as Record<string, any>) };
     return config;
   }
 
