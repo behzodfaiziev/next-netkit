@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.9.1]
+
+- fixed issue when the custom headers are not passed to the request
+
 ## [0.9.0]
 
 - added `isTokenRefreshRequired` method to check if the token refresh is required before sending a
@@ -124,7 +128,8 @@ return this.networkManager.request<SignInResponseDto>({
   eslint.config.js) by @remidosol
 - Updated package.json to include new scripts for formatting and linting, and added necessary
   dependencies. (package.json) by @remidosol
-- Code Consistency: Updated various files to use double quotes instead of single quotes for string literals to align
+- Code Consistency: Updated various files to use double quotes instead of single quotes for string
+  literals to align
   with the new Prettier configuration. by @remidosol
 
 ## [0.3.3]
